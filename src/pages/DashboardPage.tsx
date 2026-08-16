@@ -1,4 +1,5 @@
 import { aggregateByCategory, calculateBalance, calculateSavingsRate, summarizePeriod } from "../engine/financialEngine";
+import { DashboardSkeleton } from "../components/Skeleton";
 import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
 import { currentMonth, formatCurrency, formatPercentage } from "../lib/format";
@@ -7,7 +8,7 @@ export function DashboardPage() {
   const { loading, error, accounts, categories, transactions } = useAppData();
   const { t } = useI18n();
 
-  if (loading) return <p className="text-sm text-ink-900/60 dark:text-slate-400">{t("loading")}</p>;
+  if (loading) return <DashboardSkeleton />;
   if (error) return <p className="text-sm text-red-600">{error}</p>;
 
   const month = currentMonth();
@@ -18,7 +19,7 @@ export function DashboardPage() {
   const byCategory = aggregateByCategory(transactions, categories, "expense", range);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="fintra-fade-in flex flex-col gap-6">
       <h1 className="text-xl font-semibold text-ink-900 dark:text-slate-100">{t("dashboard_title")}</h1>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -31,7 +32,7 @@ export function DashboardPage() {
         />
       </div>
 
-      <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5">
+      <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 transition hover:shadow-md">
         <h2 className="mb-4 text-sm font-medium text-ink-900/70 dark:text-slate-300">{t("dashboard_by_category")}</h2>
         {byCategory.length === 0 ? (
           <p className="text-sm text-ink-900/50 dark:text-slate-500">{t("dashboard_no_expenses")}</p>
@@ -43,7 +44,7 @@ export function DashboardPage() {
                 <span className="w-32 shrink-0 truncate text-sm text-ink-900 dark:text-slate-100">{c.name}</span>
                 <div className="h-2 flex-1 rounded-full bg-black/5 dark:bg-white/10">
                   <div
-                    className="h-2 rounded-full"
+                    className="h-2 rounded-full transition-all duration-500"
                     style={{ width: `${c.percentage * 100}%`, background: c.color }}
                   />
                 </div>
@@ -60,7 +61,7 @@ export function DashboardPage() {
 function SummaryCard({ label, value, tone }: { label: string; value: string; tone?: "positive" | "negative" }) {
   const toneClass = tone === "positive" ? "text-fintra-500" : tone === "negative" ? "text-red-600" : "text-ink-900 dark:text-slate-100";
   return (
-    <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5">
+    <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 transition hover:shadow-md">
       <p className="text-xs text-ink-900/50 dark:text-slate-500">{label}</p>
       <p className={`mt-2 text-2xl font-semibold ${toneClass}`}>{value}</p>
     </div>

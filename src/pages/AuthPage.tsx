@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useAuth } from "../features/auth/AuthProvider";
+import { Field, TextInput } from "../components/Field";
 import { useI18n } from "../features/i18n/I18nProvider";
 
 export function AuthPage() {
@@ -43,8 +44,8 @@ export function AuthPage() {
   }
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-[#f5f7fb] px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-8 shadow-sm">
+    <main className="flex min-h-svh items-center justify-center bg-[#f5f7fb] dark:bg-[#0b1220] px-4">
+      <div className="fintra-fade-in w-full max-w-sm rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-ink-900 dark:text-slate-100">{t("auth_title")}</h1>
         <p className="mt-1 text-sm text-ink-900/60 dark:text-slate-400">
           {mode === "login" ? t("auth_login_subtitle") : t("auth_signup_subtitle")}
@@ -54,7 +55,7 @@ export function AuthPage() {
           type="button"
           onClick={handleGoogleClick}
           disabled={googleLoading}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm font-medium text-ink-900 dark:text-slate-100 hover:bg-black/5 dark:bg-white/10 disabled:opacity-60"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm font-medium text-ink-900 dark:text-slate-100 transition hover:bg-black/5 dark:hover:bg-white/10 active:scale-[0.98] disabled:opacity-60"
         >
           <GoogleIcon />
           {googleLoading ? t("auth_google_redirecting") : t("auth_google")}
@@ -69,29 +70,25 @@ export function AuthPage() {
         {signupDone ? (
           <p className="mt-6 rounded-lg bg-fintra-500/10 p-3 text-sm text-fintra-500">{t("auth_signup_done")}</p>
         ) : (
-          <form className="mt-6 flex flex-col gap-3" onSubmit={handleSubmit}>
-            <input
-              type="email"
-              required
-              placeholder={t("auth_email")}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
-            />
-            <input
-              type="password"
-              required
-              minLength={6}
-              placeholder={t("auth_password")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
-            />
-            {error && <p className="text-sm text-red-600">{error}</p>}
+          <form className="mt-6 flex flex-col gap-4" onSubmit={handleSubmit}>
+            <Field label={t("auth_email")}>
+              <TextInput type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </Field>
+            <Field label={t("auth_password")}>
+              <TextInput
+                type="password"
+                required
+                minLength={6}
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Field>
+            {error && <p className="fintra-fade-in text-sm text-red-600">{error}</p>}
             <button
               type="submit"
               disabled={loading}
-              className="mt-1 rounded-lg bg-fintra-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+              className="mt-1 rounded-lg bg-fintra-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-fintra-400 active:scale-[0.98] disabled:opacity-60"
             >
               {loading ? t("auth_wait") : mode === "login" ? t("auth_login") : t("auth_signup")}
             </button>

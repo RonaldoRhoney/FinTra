@@ -29,3 +29,28 @@ Pedido do usuário: "considere rhoneyinc@gmail.com o ADM como padrão e crie o p
 **i18n PT/EN/ES**: dicionário de traduções próprio (`src/features/i18n/`), sem biblioteca externa — decisão ZERO-COST-FIRST e "não criar estruturas complexas antes de necessárias" (`CLAUDE.md` do ecossistema), já que 3 idiomas fixos não justificam um motor de i18n completo. Português é o padrão; preferência salva em `localStorage`. Aplicado em todas as telas do V0.1 (login, dashboard, contas, transações, categorias, orçamentos, metas, admin).
 
 Build, 13/13 testes e lint continuam limpos. Deploy de produção atualizado.
+
+## DEC-003 — Auditoria da V0.1 e melhorias de fonte, usabilidade e fluidez (2026-08-16)
+
+Pedido do usuário: "melhore a fonte e usabilidade, assim também como tornar o app mais fluido e dinâmico, faça uma auditoria dessa primeira versão antes de seguirmos".
+
+**Auditoria — achados**:
+1. Todos os 6 formulários (Contas, Transações, Categorias, Orçamentos, Metas, login) usavam só `placeholder`, sem `<label>` — falha de acessibilidade (leitor de tela não identifica o campo) e de usabilidade (a dica some ao digitar).
+2. Nenhum botão "Remover" pedia confirmação — clique errado apagava dado real na hora.
+3. `GoalsPage` usava `window.prompt()` nativo do navegador pra contribuir com meta — quebrava a identidade visual no meio do fluxo.
+4. Estado de carregamento era só texto "Carregando…", sem esqueleto — sensação de app travado.
+5. Erros apareciam como texto vermelho estático, sem se auto-dispensar nem hierarquia visual.
+6. Fonte do sistema genérica, sem identidade tipográfica.
+7. Zero transição/microinteração — troca de tema, navegação e hover eram abruptos.
+8. Sem foco visível customizado (dependia do outline default do navegador).
+
+**Corrigido**:
+- Fonte **Inter Variable** self-hosted via `@fontsource-variable/inter` (pacote npm, zero requisição externa em runtime — mantém ZERO-COST-FIRST e privacy-by-design, nada de Google Fonts via CDN).
+- `Field`/`TextInput`/`Select` (`src/components/Field.tsx`): todo formulário agora tem `<label>` de verdade associado ao input.
+- `ConfirmDialog` (`src/components/ConfirmDialog.tsx`): modal de confirmação reutilizável (`useConfirm()`) aplicado em todas as exclusões (contas, transações, categorias, orçamentos, metas).
+- `Toast` (`src/components/Toast.tsx`): notificação transiente (`useToast()`) substituindo o texto de erro estático nos formulários.
+- `GoalsPage`: `window.prompt()` trocado por um modal próprio (`ContributeModal`) consistente com o resto do app.
+- `Skeleton`/`DashboardSkeleton` (`src/components/Skeleton.tsx`): esqueleto de carregamento no lugar do texto "Carregando…" na tela inicial.
+- Transições: `:focus-visible` customizado (outline verde da marca), transição de cor/borda global (150ms), fade-in suave ao entrar em cada tela (`fintra-fade-in`), barras de progresso (categoria/orçamento/meta) animam a largura (500ms) em vez de pular direto pro valor final, hover com leve elevação (`shadow-md`) nos cards e `active:scale-[0.98]` nos botões principais.
+
+Build, 13/13 testes e lint continuam limpos. Deploy de produção atualizado.

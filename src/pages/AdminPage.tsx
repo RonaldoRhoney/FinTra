@@ -32,7 +32,7 @@ export function AdminPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="fintra-fade-in flex flex-col gap-6">
       <div>
         <h1 className="text-xl font-semibold text-ink-900 dark:text-slate-100">{t("admin_title")}</h1>
         <p className="mt-1 text-sm text-ink-900/60 dark:text-slate-400">{t("admin_subtitle")}</p>
@@ -40,7 +40,7 @@ export function AdminPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5">
+          <div key={c.label} className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 transition hover:shadow-md">
             <p className="text-xs text-ink-900/50 dark:text-slate-500">{c.label}</p>
             <p className="mt-2 text-2xl font-semibold text-ink-900 dark:text-slate-100">{c.value}</p>
           </div>

@@ -4,6 +4,9 @@ import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
 import type { TranslationKey } from "../features/i18n/translations";
 import { formatCurrency } from "../lib/format";
+import { Field, Select, TextInput } from "../components/Field";
+import { useConfirm } from "../components/ConfirmDialog";
+import { useToast } from "../components/Toast";
 import type { AccountType } from "../types/finance";
 
 const ACCOUNT_TYPES: { value: AccountType; labelKey: TranslationKey }[] = [
@@ -17,17 +20,17 @@ const ACCOUNT_TYPES: { value: AccountType; labelKey: TranslationKey }[] = [
 export function AccountsPage() {
   const { accounts, refetch } = useAppData();
   const { t } = useI18n();
+  const confirm = useConfirm();
+  const { showToast } = useToast();
   const [name, setName] = useState("");
   const [institution, setInstitution] = useState("");
   const [accountType, setAccountType] = useState<AccountType>("corrente");
   const [initialBalance, setInitialBalance] = useState("0");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    setError(null);
     try {
       await accountsRepo.create({
         name,
@@ -40,62 +43,54 @@ export function AccountsPage() {
       setInitialBalance("0");
       await refetch();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error creating account.");
+      showToast(err instanceof Error ? err.message : "Error creating account.");
     } finally {
       setSubmitting(false);
     }
   }
 
-  async function handleRemove(id: string) {
+  async function handleRemove(id: string, label: string) {
+    const ok = await confirm({
+      title: t("dialog_confirm_delete_title"),
+      description: label,
+      confirmLabel: t("dialog_confirm"),
+      cancelLabel: t("dialog_cancel"),
+    });
+    if (!ok) return;
     await accountsRepo.remove(id);
     await refetch();
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="fintra-fade-in flex flex-col gap-6">
       <h1 className="text-xl font-semibold text-ink-900 dark:text-slate-100">{t("accounts_title")}</h1>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3 rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 sm:grid-cols-4">
-        <input
-          required
-          placeholder={t("accounts_name")}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
-        />
-        <input
-          placeholder={t("accounts_institution")}
-          value={institution}
-          onChange={(e) => setInstitution(e.target.value)}
-          className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
-        />
-        <select
-          value={accountType}
-          onChange={(e) => setAccountType(e.target.value as AccountType)}
-          className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
-        >
-          {ACCOUNT_TYPES.map((type) => (
-            <option key={type.value} value={type.value}>
-              {t(type.labelKey)}
-            </option>
-          ))}
-        </select>
-        <input
-          type="number"
-          step="0.01"
-          placeholder={t("accounts_initial_balance")}
-          value={initialBalance}
-          onChange={(e) => setInitialBalance(e.target.value)}
-          className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
-        />
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 sm:grid-cols-4">
+        <Field label={t("accounts_name")}>
+          <TextInput required value={name} onChange={(e) => setName(e.target.value)} />
+        </Field>
+        <Field label={t("accounts_institution")}>
+          <TextInput value={institution} onChange={(e) => setInstitution(e.target.value)} />
+        </Field>
+        <Field label={t("accounts_type_label")}>
+          <Select value={accountType} onChange={(e) => setAccountType(e.target.value as AccountType)}>
+            {ACCOUNT_TYPES.map((type) => (
+              <option key={type.value} value={type.value}>
+                {t(type.labelKey)}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field label={t("accounts_initial_balance")}>
+          <TextInput type="number" step="0.01" value={initialBalance} onChange={(e) => setInitialBalance(e.target.value)} />
+        </Field>
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-lg bg-fintra-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-60 sm:col-span-4 sm:w-fit"
+          className="rounded-lg bg-fintra-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-fintra-400 active:scale-[0.98] disabled:opacity-60 sm:col-span-4 sm:w-fit"
         >
           {t("accounts_add")}
         </button>
-        {error && <p className="text-sm text-red-600 sm:col-span-4">{error}</p>}
       </form>
 
       <div className="overflow-hidden rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800">
@@ -104,7 +99,7 @@ export function AccountsPage() {
         ) : (
           <ul className="divide-y divide-black/5 dark:divide-white/10">
             {accounts.map((a) => (
-              <li key={a.id} className="flex items-center justify-between p-4">
+              <li key={a.id} className="flex items-center justify-between p-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]">
                 <div>
                   <p className="text-sm font-medium text-ink-900 dark:text-slate-100">{a.name}</p>
                   <p className="text-xs text-ink-900/50 dark:text-slate-500">
@@ -116,7 +111,7 @@ export function AccountsPage() {
                   <span className="text-sm text-ink-900/70 dark:text-slate-300">{formatCurrency(a.initialBalance)}</span>
                   <button
                     type="button"
-                    onClick={() => handleRemove(a.id)}
+                    onClick={() => handleRemove(a.id, a.name)}
                     className="text-xs text-red-600 hover:underline"
                   >
                     {t("accounts_remove")}

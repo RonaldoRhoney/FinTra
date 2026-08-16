@@ -52,6 +52,7 @@ const pt = {
   accounts_type_carteira: "Carteira",
   accounts_type_investimento: "Investimento",
   accounts_type_outro: "Outro",
+  accounts_type_label: "Tipo de conta",
 
   categories_title: "Categorias",
   categories_name: "Nome da categoria",
@@ -61,6 +62,7 @@ const pt = {
   categories_income_title: "Receitas",
   categories_expense_title: "Despesas",
   categories_empty: "Nenhuma categoria ainda.",
+  categories_type_label: "Tipo",
 
   transactions_title: "Transações",
   transactions_account_placeholder: "Conta…",
@@ -71,6 +73,7 @@ const pt = {
   transactions_empty: "Nenhuma transação lançada ainda.",
   transactions_no_description: "Sem descrição",
   transactions_need_account: "Cadastre uma conta antes de lançar uma transação.",
+  transactions_date_label: "Data",
 
   budgets_title: "Orçamentos",
   budgets_category_placeholder: "Categoria…",
@@ -99,6 +102,14 @@ const pt = {
   admin_new_users_7d: "Novos usuários (7 dias)",
   admin_new_transactions_7d: "Novas transações (7 dias)",
   admin_denied: "Acesso restrito a administradores.",
+
+  dialog_confirm_delete_title: "Remover item?",
+  dialog_confirm_delete_description: "Essa ação não pode ser desfeita.",
+  dialog_confirm: "Remover",
+  dialog_cancel: "Cancelar",
+  goals_contribute_title: "Guardar dinheiro",
+  goals_contribute_amount: "Valor a guardar (R$)",
+  goals_contribute_submit: "Confirmar",
 };
 
 const en: typeof pt = {
@@ -147,6 +158,7 @@ const en: typeof pt = {
   accounts_type_carteira: "Wallet",
   accounts_type_investimento: "Investment",
   accounts_type_outro: "Other",
+  accounts_type_label: "Account type",
 
   categories_title: "Categories",
   categories_name: "Category name",
@@ -156,6 +168,7 @@ const en: typeof pt = {
   categories_income_title: "Income",
   categories_expense_title: "Expenses",
   categories_empty: "No categories yet.",
+  categories_type_label: "Type",
 
   transactions_title: "Transactions",
   transactions_account_placeholder: "Account…",
@@ -166,6 +179,7 @@ const en: typeof pt = {
   transactions_empty: "No transactions yet.",
   transactions_no_description: "No description",
   transactions_need_account: "Create an account before adding a transaction.",
+  transactions_date_label: "Date",
 
   budgets_title: "Budgets",
   budgets_category_placeholder: "Category…",
@@ -194,6 +208,14 @@ const en: typeof pt = {
   admin_new_users_7d: "New users (7 days)",
   admin_new_transactions_7d: "New transactions (7 days)",
   admin_denied: "Restricted to administrators.",
+
+  dialog_confirm_delete_title: "Remove item?",
+  dialog_confirm_delete_description: "This action cannot be undone.",
+  dialog_confirm: "Remove",
+  dialog_cancel: "Cancel",
+  goals_contribute_title: "Save money",
+  goals_contribute_amount: "Amount to save",
+  goals_contribute_submit: "Confirm",
 };
 
 const es: typeof pt = {
@@ -242,6 +264,7 @@ const es: typeof pt = {
   accounts_type_carteira: "Billetera",
   accounts_type_investimento: "Inversión",
   accounts_type_outro: "Otro",
+  accounts_type_label: "Tipo de cuenta",
 
   categories_title: "Categorías",
   categories_name: "Nombre de la categoría",
@@ -251,6 +274,7 @@ const es: typeof pt = {
   categories_income_title: "Ingresos",
   categories_expense_title: "Gastos",
   categories_empty: "Todavía no hay categorías.",
+  categories_type_label: "Tipo",
 
   transactions_title: "Transacciones",
   transactions_account_placeholder: "Cuenta…",
@@ -261,6 +285,7 @@ const es: typeof pt = {
   transactions_empty: "Todavía no hay transacciones.",
   transactions_no_description: "Sin descripción",
   transactions_need_account: "Crea una cuenta antes de registrar una transacción.",
+  transactions_date_label: "Fecha",
 
   budgets_title: "Presupuestos",
   budgets_category_placeholder: "Categoría…",
@@ -289,6 +314,14 @@ const es: typeof pt = {
   admin_new_users_7d: "Usuarios nuevos (7 días)",
   admin_new_transactions_7d: "Transacciones nuevas (7 días)",
   admin_denied: "Acceso restringido a administradores.",
+
+  dialog_confirm_delete_title: "¿Eliminar elemento?",
+  dialog_confirm_delete_description: "Esta acción no se puede deshacer.",
+  dialog_confirm: "Eliminar",
+  dialog_cancel: "Cancelar",
+  goals_contribute_title: "Guardar dinero",
+  goals_contribute_amount: "Monto a guardar",
+  goals_contribute_submit: "Confirmar",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };

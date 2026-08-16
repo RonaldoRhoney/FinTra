@@ -1,5 +1,7 @@
 import { Navigate, Route, BrowserRouter, Routes } from "react-router-dom";
+import { ConfirmProvider } from "./components/ConfirmDialog";
 import { Layout } from "./components/Layout";
+import { ToastProvider } from "./components/Toast";
 import { AppDataProvider, useAppData } from "./features/data/AppDataProvider";
 import { AuthProvider, useAuth } from "./features/auth/AuthProvider";
 import { I18nProvider, useI18n } from "./features/i18n/I18nProvider";
@@ -41,22 +43,26 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <I18nProvider>
-          <AuthProvider>
-            <AuthGate>
-              <Routes>
-                <Route element={<Layout />}>
-                  <Route index element={<DashboardPage />} />
-                  <Route path="contas" element={<AccountsPage />} />
-                  <Route path="transacoes" element={<TransactionsPage />} />
-                  <Route path="categorias" element={<CategoriesPage />} />
-                  <Route path="orcamentos" element={<BudgetsPage />} />
-                  <Route path="metas" element={<GoalsPage />} />
-                  <Route path="admin" element={<AdminRoute />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Route>
-              </Routes>
-            </AuthGate>
-          </AuthProvider>
+          <ToastProvider>
+            <ConfirmProvider>
+              <AuthProvider>
+                <AuthGate>
+                  <Routes>
+                    <Route element={<Layout />}>
+                      <Route index element={<DashboardPage />} />
+                      <Route path="contas" element={<AccountsPage />} />
+                      <Route path="transacoes" element={<TransactionsPage />} />
+                      <Route path="categorias" element={<CategoriesPage />} />
+                      <Route path="orcamentos" element={<BudgetsPage />} />
+                      <Route path="metas" element={<GoalsPage />} />
+                      <Route path="admin" element={<AdminRoute />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Route>
+                  </Routes>
+                </AuthGate>
+              </AuthProvider>
+            </ConfirmProvider>
+          </ToastProvider>
         </I18nProvider>
       </ThemeProvider>
     </BrowserRouter>
