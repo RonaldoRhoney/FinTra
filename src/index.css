@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fintra-500: #16a34a;
+  --color-fintra-400: #22c55e;
+  --color-ink-900: #0f172a;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  background: #f5f7fb;
+}
