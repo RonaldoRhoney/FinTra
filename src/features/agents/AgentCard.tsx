@@ -7,12 +7,14 @@ export function AgentCard({
   ctaKey,
   loadingKey,
   unavailableKey,
+  disclaimerKey,
   run,
 }: {
   titleKey: TranslationKey;
   ctaKey: TranslationKey;
   loadingKey: TranslationKey;
   unavailableKey: TranslationKey;
+  disclaimerKey?: TranslationKey;
   run: () => Promise<string>;
 }) {
   const { t } = useI18n();
@@ -36,7 +38,12 @@ export function AgentCard({
     <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 transition hover:shadow-md">
       <h2 className="mb-3 text-sm font-medium text-ink-900/70 dark:text-slate-300">{t(titleKey)}</h2>
 
-      {result && <p className="fintra-fade-in whitespace-pre-line text-sm text-ink-900 dark:text-slate-100">{result}</p>}
+      {result && (
+        <div className="fintra-fade-in">
+          <p className="whitespace-pre-line text-sm text-ink-900 dark:text-slate-100">{result}</p>
+          {disclaimerKey && <p className="mt-2 text-xs italic text-ink-900/40 dark:text-slate-500">{t(disclaimerKey)}</p>}
+        </div>
+      )}
 
       {error && <p className="fintra-fade-in text-sm text-red-600">{t(unavailableKey)}</p>}
 

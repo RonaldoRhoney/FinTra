@@ -132,3 +132,19 @@ Reaproveitou 100% o `runAgent()` compartilhado (DEC-007) — só o prompt de sis
 **Testado em produção**: endpoint rejeita requisição sem token (401), confirmando o deploy e o roteamento corretos. **Não repeti o teste de ponta a ponta com usuário autenticado real desta vez** — o Supabase atingiu rate limit de envio de e-mail de confirmação depois dos testes anteriores (DEC-006/DEC-007) na mesma sessão. Como o `behavior-agent.ts` reaproveita exatamente a mesma função `runAgent()` já validada duas vezes (auth, chamada à Groq, formato de resposta) e só troca o conteúdo do prompt, o risco residual é baixo — mas fica registrado que essa chamada específica não foi confirmada ao vivo com uma resposta real da IA, diferente das duas anteriores.
 
 Build, 29/29 testes e lint continuam limpos.
+
+## DEC-009 — V0.4: Goal Agent, Planning Agent e Investment Education Agent — os 3 últimos agentes do PRD (2026-08-16)
+
+Pedido do usuário: "siga com: Goal Agent, Planning Agent e Investment Education Agent" — os três de uma vez, fechando os 6 agentes do `docs/foundation/05_AGENTS.md`.
+
+**Goal Agent**: avalia metas, prazo, progresso e risco de atraso. Contexto = `goalProjections` (já calculado pelo V0.2/V0.3) + `savingsCapacity`. Só sinaliza meta como "em risco" quando o aporte necessário excede a capacidade de economia real — se nada estiver em risco, o prompt instrui o modelo a dizer isso em vez de inventar preocupação.
+
+**Planning Agent**: simula cenários e distribui a capacidade de economia entre as metas existentes. Contexto = `savingsCapacity` + `goalProjections` + `cashFlow`. Se `savingsCapacity.hasEnoughHistory=false`, o prompt instrui a admitir que ainda não há dado suficiente pra simular, em vez de inventar um número — mesmo padrão de honestidade dos agentes anteriores.
+
+**Investment Education Agent — o mais delicado dos 6** (`docs/foundation/00_PRODUCT_VISION.md`: "Nenhuma recomendação regulada de investimento sem validação jurídica/regulatória"). Prompt de sistema com restrições absolutas e explícitas: nunca recomendar comprar/vender/alocar em ativo, produto, corretora ou instituição específica; nunca garantir retorno/rentabilidade; nunca calcular ou sugerir um valor "ideal" de investimento (só explica a capacidade de aporte que já está no contexto, sem indicar destino); sempre deixar claro que é conteúdo educativo geral, não consultoria personalizada. A UI reforça isso com um disclaimer visível abaixo de toda resposta desse agente (`AgentCard` ganhou um `disclaimerKey` opcional). Como não existe integração de corretora nem ação "comprar" em nenhum lugar do produto, mesmo que o modelo cite algo indevido o resultado continua sendo só texto exibido, nunca uma ação executável.
+
+Dashboard agora tem os 6 agentes do PRD completos, todos reaproveitando o `runAgent()` compartilhado (DEC-007).
+
+**Testado em produção**: os 4 endpoints da sessão (behavior-agent incluso) responderam 401 sem token, confirmando deploy e roteamento corretos. **Teste de ponta a ponta com resposta real da IA não foi possível repetir**: o rate limit de e-mail do Supabase seguiu ativo, e uma tentativa de contornar criando usuário direto via SQL (`insert into auth.users` com senha via `pgcrypto`) quebrou o schema esperado pelo GoTrue (erro 500 "Database error querying schema" no login) — o usuário corrompido foi removido imediatamente, sem deixar resíduo. Fica registrado com transparência: a validação desses 4 endpoints se apoia no `runAgent()` já comprovado 2 vezes com sucesso (DEC-006/007), não em uma chamada real nova.
+
+Build, 29/29 testes e lint continuam limpos. Deploy de produção atualizado.

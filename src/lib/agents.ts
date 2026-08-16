@@ -33,3 +33,15 @@ export const savingsCoachRepo = {
 export const behaviorAgentRepo = {
   detect: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("behavior-agent", payload),
 };
+
+export const goalAgentRepo = {
+  evaluate: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("goal-agent", payload),
+};
+
+export const planningAgentRepo = {
+  simulate: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("planning-agent", payload),
+};
+
+export const investmentEducationAgentRepo = {
+  explain: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("investment-education-agent", payload),
+};

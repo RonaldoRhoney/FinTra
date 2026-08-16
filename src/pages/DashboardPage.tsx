@@ -18,7 +18,14 @@ import { AgentCard } from "../features/agents/AgentCard";
 import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
 import type { TranslationKey } from "../features/i18n/translations";
-import { behaviorAgentRepo, financialAnalystRepo, savingsCoachRepo } from "../lib/agents";
+import {
+  behaviorAgentRepo,
+  financialAnalystRepo,
+  goalAgentRepo,
+  investmentEducationAgentRepo,
+  planningAgentRepo,
+  savingsCoachRepo,
+} from "../lib/agents";
 import { currentMonth, formatCurrency, formatPercentage } from "../lib/format";
 
 export function DashboardPage() {
@@ -81,6 +88,28 @@ export function DashboardPage() {
           loadingKey="agent_behavior_loading"
           unavailableKey="agent_behavior_unavailable"
           run={() => behaviorAgentRepo.detect({ locale, anomalies, categoryTrends, monthlyHistory })}
+        />
+        <AgentCard
+          titleKey="agent_goal_title"
+          ctaKey="agent_goal_cta"
+          loadingKey="agent_goal_loading"
+          unavailableKey="agent_goal_unavailable"
+          run={() => goalAgentRepo.evaluate({ locale, goalProjections, savingsCapacity })}
+        />
+        <AgentCard
+          titleKey="agent_planning_title"
+          ctaKey="agent_planning_cta"
+          loadingKey="agent_planning_loading"
+          unavailableKey="agent_planning_unavailable"
+          run={() => planningAgentRepo.simulate({ locale, savingsCapacity, goalProjections, cashFlow })}
+        />
+        <AgentCard
+          titleKey="agent_investment_education_title"
+          ctaKey="agent_investment_education_cta"
+          loadingKey="agent_investment_education_loading"
+          unavailableKey="agent_investment_education_unavailable"
+          disclaimerKey="agent_investment_education_disclaimer"
+          run={() => investmentEducationAgentRepo.explain({ locale, savingsCapacity })}
         />
       </div>
 

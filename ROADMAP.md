@@ -10,7 +10,7 @@
 
 - **V0.2** — Financial Engine completo. **STATUS: CONCLUÍDA** (2026-08-16, DEC-004). Histórico mensal, média/variação por categoria, detecção de gasto fora do padrão, fluxo de caixa projetado, capacidade de economia, projeção de meta, seção "Insights prioritários" no dashboard. Recorrência de transação (ex: "assinatura mensal") ainda não implementada — não fazia parte do plano aprovado, fica pra quando for pedida explicitamente.
 - **V0.3** — Goals. **STATUS: CONCLUÍDA** (2026-08-16, DEC-005). Tela de Metas agora mostra prazo, aporte mensal necessário e projeção "nesse ritmo, bate a meta em X meses" — usando o motor do V0.2.
-- **V0.4** — Intelligence/Agents. **EM ANDAMENTO** (2026-08-16, DEC-006/007/008): Financial Analyst, Savings Coach e Behavior Agent implementados e em produção, via Groq (llama-3.3-70b-versatile), sem custo. Faltam Goal Agent, Planning Agent, Investment Education Agent — cada um entra em uma etapa própria, não de uma vez.
+- **V0.4** — Intelligence/Agents. **STATUS: CONCLUÍDA** (2026-08-16, DEC-006 a DEC-009). Os 6 agentes do PRD implementados e em produção, via Groq (llama-3.3-70b-versatile), sem custo: Financial Analyst, Savings Coach, Behavior Agent, Goal Agent, Planning Agent, Investment Education Agent (com restrições reforçadas contra recomendação regulada de investimento).
 - **V0.5** — Reports.
 - **V0.6** — Open Finance. **Bloqueada até resposta às 8 perguntas de `docs/foundation/open-finance/PARTICIPATION_MODEL.md`** (participante direto vs. integrador, responsabilidade por agente de tratamento, quem armazena/processa dado, DPA, custos) — decisão que não cabe ao Claude Code tomar sozinho.
 - **V0.7** — Alerts.

@@ -134,6 +134,22 @@ const pt = {
   agent_behavior_cta: "Analisar meu comportamento",
   agent_behavior_loading: "Procurando padrões…",
   agent_behavior_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
+
+  agent_goal_title: "Goal Agent",
+  agent_goal_cta: "Avaliar minhas metas",
+  agent_goal_loading: "Avaliando metas…",
+  agent_goal_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
+
+  agent_planning_title: "Planning Agent",
+  agent_planning_cta: "Simular distribuição da minha capacidade",
+  agent_planning_loading: "Simulando cenários…",
+  agent_planning_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
+
+  agent_investment_education_title: "Investment Education Agent",
+  agent_investment_education_cta: "Entender minha capacidade de investir",
+  agent_investment_education_loading: "Preparando explicação…",
+  agent_investment_education_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
+  agent_investment_education_disclaimer: "Conteúdo educativo geral — não é recomendação de investimento personalizada.",
 };
 
 const en: typeof pt = {
@@ -264,6 +280,22 @@ const en: typeof pt = {
   agent_behavior_cta: "Analyze my behavior",
   agent_behavior_loading: "Looking for patterns…",
   agent_behavior_unavailable: "The agent is unavailable right now — try again shortly.",
+
+  agent_goal_title: "Goal Agent",
+  agent_goal_cta: "Evaluate my goals",
+  agent_goal_loading: "Evaluating goals…",
+  agent_goal_unavailable: "The agent is unavailable right now — try again shortly.",
+
+  agent_planning_title: "Planning Agent",
+  agent_planning_cta: "Simulate distributing my capacity",
+  agent_planning_loading: "Simulating scenarios…",
+  agent_planning_unavailable: "The agent is unavailable right now — try again shortly.",
+
+  agent_investment_education_title: "Investment Education Agent",
+  agent_investment_education_cta: "Understand my capacity to invest",
+  agent_investment_education_loading: "Preparing explanation…",
+  agent_investment_education_unavailable: "The agent is unavailable right now — try again shortly.",
+  agent_investment_education_disclaimer: "General educational content — not personalized investment advice.",
 };
 
 const es: typeof pt = {
@@ -394,6 +426,22 @@ const es: typeof pt = {
   agent_behavior_cta: "Analizar mi comportamiento",
   agent_behavior_loading: "Buscando patrones…",
   agent_behavior_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
+
+  agent_goal_title: "Goal Agent",
+  agent_goal_cta: "Evaluar mis metas",
+  agent_goal_loading: "Evaluando metas…",
+  agent_goal_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
+
+  agent_planning_title: "Planning Agent",
+  agent_planning_cta: "Simular distribución de mi capacidad",
+  agent_planning_loading: "Simulando escenarios…",
+  agent_planning_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
+
+  agent_investment_education_title: "Investment Education Agent",
+  agent_investment_education_cta: "Entender mi capacidad de invertir",
+  agent_investment_education_loading: "Preparando explicación…",
+  agent_investment_education_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
+  agent_investment_education_disclaimer: "Contenido educativo general — no es recomendación de inversión personalizada.",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };
