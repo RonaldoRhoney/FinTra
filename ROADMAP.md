@@ -4,12 +4,12 @@
 
 ## V0.1 — Foundation
 
-**STATUS: analisada, aguardando aprovação para implementar** (2026-08-16). Escopo: entidades sem Open Finance, entrada manual, Financial Engine determinístico básico, RLS, dashboard reduzido. Ver `PROJECT_CONTEXT.md`.
+**STATUS: CONCLUÍDA e em produção** (`fintra.rhoneyinc.com`, 2026-08-16). Schema com RLS, Financial Engine determinístico básico (saldo, resumo de período, taxa de economia, agregação por categoria, progresso de orçamento/meta), CRUD completo (contas/transações/categorias/orçamentos/metas), auth e-mail/senha + Google, admin padrão com painel de métricas agregadas, tema claro/escuro, i18n PT/EN/ES, auditoria de usabilidade/acessibilidade/fluidez aplicada. Ver `PROJECT_CONTEXT.md` e `docs/DECISIONS.md` (DEC-001 a DEC-003).
 
 ## Versões seguintes (visão da Foundation, não comprometidas em detalhe)
 
-- **V0.2** — Financial Engine completo.
-- **V0.3** — Goals.
+- **V0.2** — Financial Engine completo (recorrência, média histórica, variação, fluxo de caixa, capacidade de economia, projeções, anomalias).
+- **V0.3** — Goals. *(Já coberto em parte pelo V0.1 — metas com contribuição manual já existem; o que falta aqui é o que o V0.2 adicionar de projeção puder aplicar a elas, ex: "nesse ritmo, você bate a meta em X meses".)*
 - **V0.4** — Intelligence/Agents.
 - **V0.5** — Reports.
 - **V0.6** — Open Finance. **Bloqueada até resposta às 8 perguntas de `docs/foundation/open-finance/PARTICIPATION_MODEL.md`** (participante direto vs. integrador, responsabilidade por agente de tratamento, quem armazena/processa dado, DPA, custos) — decisão que não cabe ao Claude Code tomar sozinho.
