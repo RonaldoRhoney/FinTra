@@ -8,6 +8,7 @@ import { I18nProvider, useI18n } from "./features/i18n/I18nProvider";
 import { ThemeProvider } from "./features/theme/ThemeProvider";
 import { AccountsPage } from "./pages/AccountsPage";
 import { AdminPage } from "./pages/AdminPage";
+import { AlertsPage } from "./pages/AlertsPage";
 import { AuthPage } from "./pages/AuthPage";
 import { BudgetsPage } from "./pages/BudgetsPage";
 import { CategoriesPage } from "./pages/CategoriesPage";
@@ -57,6 +58,7 @@ function App() {
                       <Route path="orcamentos" element={<BudgetsPage />} />
                       <Route path="metas" element={<GoalsPage />} />
                       <Route path="relatorios" element={<ReportsPage />} />
+                      <Route path="alertas" element={<AlertsPage />} />
                       <Route path="admin" element={<AdminRoute />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Route>

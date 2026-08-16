@@ -167,6 +167,12 @@ const pt = {
   reports_evolution_months_12: "12 meses",
   reports_by_category_title: "Gastos por categoria no período",
   reports_no_data: "Sem transações nesse período ainda.",
+
+  nav_alerts: "Alertas",
+  alerts_title: "Alertas",
+  alerts_empty: "Nenhum alerta por enquanto.",
+  alerts_mark_read: "Marcar como lido",
+  alerts_dismiss: "Descartar",
 };
 
 const en: typeof pt = {
@@ -330,6 +336,12 @@ const en: typeof pt = {
   reports_evolution_months_12: "12 months",
   reports_by_category_title: "Spending by category in this period",
   reports_no_data: "No transactions in this period yet.",
+
+  nav_alerts: "Alerts",
+  alerts_title: "Alerts",
+  alerts_empty: "No alerts yet.",
+  alerts_mark_read: "Mark as read",
+  alerts_dismiss: "Dismiss",
 };
 
 const es: typeof pt = {
@@ -493,6 +505,12 @@ const es: typeof pt = {
   reports_evolution_months_12: "12 meses",
   reports_by_category_title: "Gastos por categoría en el período",
   reports_no_data: "Todavía no hay transacciones en este período.",
+
+  nav_alerts: "Alertas",
+  alerts_title: "Alertas",
+  alerts_empty: "Todavía no hay alertas.",
+  alerts_mark_read: "Marcar como leído",
+  alerts_dismiss: "Descartar",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };

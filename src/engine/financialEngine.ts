@@ -365,15 +365,24 @@ export type InsightKind = "category_spike" | "anomaly" | "negative_cash_flow" | 
 
 export interface Insight {
   kind: InsightKind;
+  categoryId?: string;
   categoryName?: string;
   variation?: number;
   amount?: number;
   averageAmount?: number;
   monthsAhead?: number;
   projectedBalance?: number;
+  goalId?: string;
   goalName?: string;
   requiredMonthlyContribution?: number;
   availableCapacity?: number;
+}
+
+/** Chave estável pra deduplicar alertas persistidos (V0.7) — mesmo "tipo de
+ * aviso" pro mesmo alvo (categoria/meta) não deve virar um novo alerta toda
+ * vez que o dashboard recalcula. */
+export function insightDedupeKey(insight: Insight): string {
+  return `${insight.kind}:${insight.categoryId ?? insight.goalId ?? "general"}`;
 }
 
 /** Junta as análises acima em uma lista de insights priorizados (docs/foundation/02_PRD.md
@@ -393,12 +402,24 @@ export function generateInsights(params: {
 
   for (const trend of params.categoryTrends) {
     if (trend.hasEnoughHistory && trend.variation !== null && trend.variation >= spikeThreshold) {
-      insights.push({ kind: "category_spike", categoryName: trend.name, variation: trend.variation, amount: trend.currentTotal });
+      insights.push({
+        kind: "category_spike",
+        categoryId: trend.categoryId,
+        categoryName: trend.name,
+        variation: trend.variation,
+        amount: trend.currentTotal,
+      });
     }
   }
 
   for (const anomaly of params.anomalies) {
-    insights.push({ kind: "anomaly", categoryName: anomaly.categoryName, amount: anomaly.amount, averageAmount: anomaly.averageAmount });
+    insights.push({
+      kind: "anomaly",
+      categoryId: anomaly.categoryId,
+      categoryName: anomaly.categoryName,
+      amount: anomaly.amount,
+      averageAmount: anomaly.averageAmount,
+    });
   }
 
   if (params.cashFlow.hasEnoughHistory) {
@@ -416,6 +437,7 @@ export function generateInsights(params: {
       ) {
         insights.push({
           kind: "goal_off_track",
+          goalId: goal.goalId,
           goalName: goal.goalName,
           requiredMonthlyContribution: goal.requiredMonthlyContribution,
           availableCapacity: params.savingsCapacity.averageMonthlyNet,

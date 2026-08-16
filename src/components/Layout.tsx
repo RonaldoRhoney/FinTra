@@ -14,11 +14,13 @@ const links: { to: string; end?: boolean; labelKey: TranslationKey }[] = [
   { to: "/orcamentos", labelKey: "nav_budgets" },
   { to: "/metas", labelKey: "nav_goals" },
   { to: "/relatorios", labelKey: "nav_reports" },
+  { to: "/alertas", labelKey: "nav_alerts" },
 ];
 
 export function Layout() {
   const { user, signOut } = useAuth();
-  const { profile } = useAppData();
+  const { profile, alerts } = useAppData();
+  const unreadCount = alerts.filter((a) => a.status === "unread").length;
   const { t, locale, setLocale } = useI18n();
   const { theme, toggleTheme } = useTheme();
 
@@ -35,7 +37,7 @@ export function Layout() {
               to={link.to}
               end={link.end}
               className={({ isActive }) =>
-                `rounded-lg px-3 py-2 text-sm ${
+                `flex items-center justify-between rounded-lg px-3 py-2 text-sm ${
                   isActive
                     ? "bg-fintra-500/10 font-medium text-fintra-500"
                     : "text-ink-900/70 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10"
@@ -43,6 +45,9 @@ export function Layout() {
               }
             >
               {t(link.labelKey)}
+              {link.to === "/alertas" && unreadCount > 0 && (
+                <span className="rounded-full bg-fintra-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">{unreadCount}</span>
+              )}
             </NavLink>
           ))}
           {profile?.role === "admin" && (

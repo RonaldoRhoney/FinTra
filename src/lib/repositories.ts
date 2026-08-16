@@ -1,6 +1,7 @@
 import { supabase } from "./supabaseClient";
 import type {
   Account,
+  Alert,
   Budget,
   Goal,
   GoalContribution,
@@ -37,6 +38,10 @@ function mapTransaction(row: any): Transaction {
     description: row.description,
     occurredAt: row.occurred_at,
   };
+}
+
+function mapAlert(row: any): Alert {
+  return { id: row.id, kind: row.kind, dedupeKey: row.dedupe_key, payload: row.payload, status: row.status, createdAt: row.created_at };
 }
 
 function mapBudget(row: any): Budget {
@@ -88,6 +93,39 @@ export const adminRepo = {
       newUsers7d: Number(row.new_users_7d),
       newTransactions7d: Number(row.new_transactions_7d),
     };
+  },
+};
+
+export const alertsRepo = {
+  async list(): Promise<Alert[]> {
+    const { data, error } = await supabase
+      .from("alerts")
+      .select("*")
+      .neq("status", "dismissed")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data ?? []).map(mapAlert);
+  },
+  async recentDedupeKeys(sinceDays: number): Promise<Set<string>> {
+    const since = new Date(Date.now() - sinceDays * 24 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await supabase.from("alerts").select("dedupe_key").gte("created_at", since);
+    if (error) throw new Error(error.message);
+    return new Set((data ?? []).map((row: any) => row.dedupe_key as string));
+  },
+  async create(input: { kind: Alert["kind"]; dedupeKey: string; payload: Record<string, unknown> }) {
+    const { data: userData } = await supabase.auth.getUser();
+    const { error } = await supabase
+      .from("alerts")
+      .insert({ user_id: userData.user?.id, kind: input.kind, dedupe_key: input.dedupeKey, payload: input.payload });
+    if (error) throw new Error(error.message);
+  },
+  async markRead(id: string) {
+    const { error } = await supabase.from("alerts").update({ status: "read" }).eq("id", id);
+    if (error) throw new Error(error.message);
+  },
+  async dismiss(id: string) {
+    const { error } = await supabase.from("alerts").update({ status: "dismissed" }).eq("id", id);
+    if (error) throw new Error(error.message);
   },
 };
 

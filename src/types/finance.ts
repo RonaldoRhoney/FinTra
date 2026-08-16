@@ -55,3 +55,14 @@ export interface GoalContribution {
   amount: number;
   contributedAt: string;
 }
+
+export type AlertStatus = "unread" | "read" | "dismissed";
+
+export interface Alert {
+  id: string;
+  kind: "category_spike" | "anomaly" | "negative_cash_flow" | "goal_off_track";
+  dedupeKey: string;
+  payload: Record<string, unknown>;
+  status: AlertStatus;
+  createdAt: string;
+}

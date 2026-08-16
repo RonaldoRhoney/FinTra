@@ -11,13 +11,13 @@ import {
   projectCashFlow,
   projectGoalCompletion,
   summarizePeriod,
-  type Insight,
 } from "../engine/financialEngine";
 import { DashboardSkeleton } from "../components/Skeleton";
 import { AgentCard } from "../features/agents/AgentCard";
+import { formatInsight } from "../features/alerts/formatInsight";
+import { useAlertSync } from "../features/alerts/useAlertSync";
 import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
-import type { TranslationKey } from "../features/i18n/translations";
 import {
   behaviorAgentRepo,
   financialAnalystRepo,
@@ -31,9 +31,6 @@ import { currentMonth, formatCurrency, formatPercentage } from "../lib/format";
 export function DashboardPage() {
   const { loading, error, accounts, categories, transactions, goals, goalContributions, budgets } = useAppData();
   const { t, tf, locale } = useI18n();
-
-  if (loading) return <DashboardSkeleton />;
-  if (error) return <p className="text-sm text-red-600">{error}</p>;
 
   const month = currentMonth();
   const range = { from: `${month}-01`, to: `${month}-31` };
@@ -52,6 +49,11 @@ export function DashboardPage() {
   const budgetsProgress = budgets
     .filter((b) => b.referenceMonth === month)
     .map((b) => calculateBudgetProgress(b, transactions));
+
+  useAlertSync(loading ? [] : insights);
+
+  if (loading) return <DashboardSkeleton />;
+  if (error) return <p className="text-sm text-red-600">{error}</p>;
 
   return (
     <div className="fintra-fade-in flex flex-col gap-6">
@@ -155,34 +157,6 @@ export function DashboardPage() {
       </div>
     </div>
   );
-}
-
-function formatInsight(insight: Insight, tf: (key: TranslationKey, params: Record<string, string>) => string): string {
-  switch (insight.kind) {
-    case "category_spike":
-      return tf("insight_category_spike", {
-        category: insight.categoryName ?? "",
-        percent: formatPercentage(insight.variation ?? 0),
-        amount: formatCurrency(insight.amount ?? 0),
-      });
-    case "anomaly":
-      return tf("insight_anomaly", {
-        amount: formatCurrency(insight.amount ?? 0),
-        category: insight.categoryName ?? "",
-        average: formatCurrency(insight.averageAmount ?? 0),
-      });
-    case "negative_cash_flow":
-      return tf("insight_negative_cash_flow", {
-        months: String(insight.monthsAhead ?? 0),
-        amount: formatCurrency(insight.projectedBalance ?? 0),
-      });
-    case "goal_off_track":
-      return tf("insight_goal_off_track", {
-        goal: insight.goalName ?? "",
-        required: formatCurrency(insight.requiredMonthlyContribution ?? 0),
-        available: formatCurrency(insight.availableCapacity ?? 0),
-      });
-  }
 }
 
 function SummaryCard({ label, value, tone }: { label: string; value: string; tone?: "positive" | "negative" }) {

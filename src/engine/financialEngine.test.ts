@@ -12,6 +12,7 @@ import {
   detectAnomalies,
   estimateSavingsCapacity,
   generateInsights,
+  insightDedupeKey,
   previousPeriodRange,
   projectCashFlow,
   projectGoalCompletion,
@@ -299,7 +300,9 @@ describe("generateInsights", () => {
       goalProjections: [],
       savingsCapacity: { averageMonthlyNet: 0, hasEnoughHistory: false },
     });
-    expect(insights).toEqual([{ kind: "category_spike", categoryName: "Alimentação", variation: 1, amount: 1000 }]);
+    expect(insights).toEqual([
+      { kind: "category_spike", categoryId: "cat-food", categoryName: "Alimentação", variation: 1, amount: 1000 },
+    ]);
   });
 
   it("só sinaliza meta fora do ritmo quando o aporte necessário excede a capacidade de economia real", () => {
@@ -323,7 +326,7 @@ describe("generateInsights", () => {
       savingsCapacity: { averageMonthlyNet: 600, hasEnoughHistory: true },
     });
     expect(insights).toEqual([
-      { kind: "goal_off_track", goalName: "Viagem", requiredMonthlyContribution: 1000, availableCapacity: 600 },
+      { kind: "goal_off_track", goalId: "g1", goalName: "Viagem", requiredMonthlyContribution: 1000, availableCapacity: 600 },
     ]);
   });
 
@@ -382,5 +385,27 @@ describe("calculateVariation", () => {
 
   it("retorna null quando o valor anterior é zero (evita divisão por zero)", () => {
     expect(calculateVariation(100, 0)).toBeNull();
+  });
+});
+
+describe("insightDedupeKey", () => {
+  it("gera a mesma chave pro mesmo tipo de insight sobre a mesma categoria", () => {
+    const a = insightDedupeKey({ kind: "category_spike", categoryId: "cat-food" });
+    const b = insightDedupeKey({ kind: "category_spike", categoryId: "cat-food", amount: 999 });
+    expect(a).toBe(b);
+  });
+
+  it("gera chaves diferentes pra categorias diferentes", () => {
+    const a = insightDedupeKey({ kind: "category_spike", categoryId: "cat-food" });
+    const b = insightDedupeKey({ kind: "category_spike", categoryId: "cat-transport" });
+    expect(a).not.toBe(b);
+  });
+
+  it("usa goalId quando não há categoryId", () => {
+    expect(insightDedupeKey({ kind: "goal_off_track", goalId: "g1" })).toBe("goal_off_track:g1");
+  });
+
+  it("cai em 'general' quando não há categoria nem meta associada", () => {
+    expect(insightDedupeKey({ kind: "negative_cash_flow" })).toBe("negative_cash_flow:general");
   });
 });

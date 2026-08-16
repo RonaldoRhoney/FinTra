@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import {
   accountsRepo,
+  alertsRepo,
   budgetsRepo,
   categoriesRepo,
   goalContributionsRepo,
@@ -8,7 +9,7 @@ import {
   profileRepo,
   transactionsRepo,
 } from "../../lib/repositories";
-import type { Account, Budget, Goal, GoalContribution, Profile, Transaction, TransactionCategory } from "../../types/finance";
+import type { Account, Alert, Budget, Goal, GoalContribution, Profile, Transaction, TransactionCategory } from "../../types/finance";
 import { useAuth } from "../auth/AuthProvider";
 
 interface AppDataContextValue {
@@ -21,7 +22,9 @@ interface AppDataContextValue {
   budgets: Budget[];
   goals: Goal[];
   goalContributions: GoalContribution[];
+  alerts: Alert[];
   refetch: () => Promise<void>;
+  refetchAlerts: () => Promise<void>;
 }
 
 const AppDataContext = createContext<AppDataContextValue | undefined>(undefined);
@@ -37,13 +40,19 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [goalContributions, setGoalContributions] = useState<GoalContribution[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+
+  const refetchAlerts = useCallback(async () => {
+    if (!user) return;
+    setAlerts(await alertsRepo.list());
+  }, [user]);
 
   const refetch = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     setError(null);
     try {
-      const [profileData, accountsData, categoriesData, transactionsData, budgetsData, goalsData, contributionsData] =
+      const [profileData, accountsData, categoriesData, transactionsData, budgetsData, goalsData, contributionsData, alertsData] =
         await Promise.all([
           profileRepo.getCurrent(),
           accountsRepo.list(),
@@ -52,6 +61,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           budgetsRepo.list(),
           goalsRepo.list(),
           goalContributionsRepo.list(),
+          alertsRepo.list(),
         ]);
       setProfile(profileData);
       setAccounts(accountsData);
@@ -60,6 +70,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       setBudgets(budgetsData);
       setGoals(goalsData);
       setGoalContributions(contributionsData);
+      setAlerts(alertsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Não foi possível carregar seus dados.");
     } finally {
@@ -73,7 +84,20 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   return (
     <AppDataContext.Provider
-      value={{ loading, error, profile, accounts, categories, transactions, budgets, goals, goalContributions, refetch }}
+      value={{
+        loading,
+        error,
+        profile,
+        accounts,
+        categories,
+        transactions,
+        budgets,
+        goals,
+        goalContributions,
+        alerts,
+        refetch,
+        refetchAlerts,
+      }}
     >
       {children}
     </AppDataContext.Provider>

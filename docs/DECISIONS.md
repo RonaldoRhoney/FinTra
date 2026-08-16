@@ -181,3 +181,16 @@ Pedido do usuário: "recomece v0.6" — esclarecido via pergunta: refazer a inve
 **Conclusão confirmada com duas fontes independentes**: não existe caminho zero-custo sustentável pra Open Finance de leitura de dados no Brasil pra um produto multiusuário, hoje.
 
 **Decisão final do usuário**: pausar V0.6 (sem contratar integrador pago) e seguir o roadmap a partir do V0.7 (Alerts).
+
+## DEC-013 — V0.7: Alertas persistidos (2026-08-16)
+
+Pedido do usuário: "siga para v0.7". Plano apresentado e aprovado antes de codificar: alertas persistidos (não só recalculados a cada carregamento como os "Insights prioritários" do V0.2), deduplicados por 7 dias, página própria + contador na sidebar.
+
+**Implementado**:
+- Migration `0003_alerts.sql`: tabela `alerts` (`kind`, `dedupe_key`, `payload` jsonb, `status` unread/read/dismissed), RLS por `user_id`, sem grant pra `anon`. **RLS validada ao vivo** com usuário real e usuário simulado — outro usuário não enxerga nada.
+- `Insight` (motor V0.2) ganhou `categoryId`/`goalId` — necessários pra montar uma `dedupe_key` estável (`insightDedupeKey`, testada), já que antes só existia `categoryName`/`goalName` (texto, não identificador confiável).
+- `useAlertSync`: hook que roda no dashboard, compara os insights recalculados contra os `dedupe_key` já usados nos últimos 7 dias, e só persiste os que são genuinamente novos — evita reabrir o mesmo alerta toda vez que a página carrega (`docs/foundation/02_PRD.md`: "só alertas relevantes... evento trivial não gera notificação").
+- `formatInsight` extraído do `DashboardPage` pra um módulo compartilhado (`features/alerts/formatInsight.ts`), reaproveitado pela nova `AlertsPage` — mesma formatação i18n nos dois lugares, sem duplicar.
+- `AlertsPage`: lista alertas, marcar como lido, descartar. Contador de não lidos na sidebar, ao lado do item "Alertas".
+
+Build, 38/38 testes (4 novos) e lint continuam limpos. Deploy de produção atualizado.
