@@ -15,3 +15,17 @@ Pedido do usuário: aprovar e implementar o V0.1 (ver `PROJECT_CONTEXT.md`), dep
 **Gotcha de segurança encontrado e corrigido**: durante a configuração do Google Cloud Console, um arquivo `client_secret_*.json` (baixado automaticamente pelo navegador do usuário) apareceu dentro da pasta do repositório, com o Client Secret em texto puro. Removido do disco antes de qualquer commit e adicionado ao `.gitignore` (`client_secret_*.json`) para prevenir recorrência — nunca foi commitado.
 
 **Pendências que continuam de pé**: `docs/foundation/open-finance/PARTICIPATION_MODEL.md` continua BLOCKER (nenhuma integração Open Finance); `LEGAL_BASIS_MATRIX.md` sem validação jurídica; sem `privacidade.html`/`termos.html`/`contato.html` publicados ainda (mesma lacuna já registrada no VoaRadar DEC-119); sem agentes de IA (V0.4 do roadmap).
+
+## DEC-002 — Admin padrão, painel de métricas, tema claro/escuro e i18n (2026-08-16)
+
+Pedido do usuário: "considere rhoneyinc@gmail.com o ADM como padrão e crie o painel adm já com as métricas, crie também o botão para o usuário deixar no modo claro ou escuro, idiomas em português (padrão), inglês, espanhol por enquanto".
+
+**Admin padrão** (skill `admin-padrao`): `profiles.role` (`user`/`admin`) + trigger que promove `rhoneyinc@gmail.com` automaticamente no cadastro, qualquer método de login. A conta já existia no projeto (login Google feito durante os testes anteriores) e foi promovida retroativamente pela própria migration.
+
+**Painel admin — decisão de privacidade**: em vez de dar à conta admin acesso RLS irrestrito a todas as transações de todos os usuários (o que contradiria `docs/foundation/privacy/PRIVACY_BY_DESIGN.md` — minimização), o painel usa uma função Postgres `SECURITY DEFINER` (`admin_platform_metrics()`) que devolve só agregados: total de usuários/contas/transações, volume de entradas/saídas, novos usuários e transações nos últimos 7 dias. A função verifica `role='admin'` internamente e rejeita qualquer outro usuário — testado com sucesso (usuário comum simulado recebeu `ERROR: Acesso restrito a administradores.`). Nenhuma transação individual de nenhum usuário é exposta ao admin por este painel.
+
+**Tema claro/escuro**: `ThemeProvider` com classe `.dark` manual no `<html>` (Tailwind v4 `@custom-variant`), persistido em `localStorage`, respeita `prefers-color-scheme` como padrão inicial. Toggle na barra lateral.
+
+**i18n PT/EN/ES**: dicionário de traduções próprio (`src/features/i18n/`), sem biblioteca externa — decisão ZERO-COST-FIRST e "não criar estruturas complexas antes de necessárias" (`CLAUDE.md` do ecossistema), já que 3 idiomas fixos não justificam um motor de i18n completo. Português é o padrão; preferência salva em `localStorage`. Aplicado em todas as telas do V0.1 (login, dashboard, contas, transações, categorias, orçamentos, metas, admin).
+
+Build, 13/13 testes e lint continuam limpos. Deploy de produção atualizado.
