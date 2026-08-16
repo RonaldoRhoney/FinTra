@@ -85,3 +85,24 @@ Pedido do usuário: "siga o fluxo natural, v0.3" — escopo já descrito e impli
 Nenhuma mudança de schema — é só o motor do V0.2 (já testado) alimentando uma tela que já existia.
 
 Build, 29/29 testes e lint continuam limpos. Deploy de produção atualizado.
+
+## DEC-006 — V0.4: primeiro agente de IA (Financial Analyst), via Groq (2026-08-16)
+
+Pedido do usuário: "siga para v0.4". Diferente das versões anteriores, essa envolve a primeira dependência de LLM do produto — apliquei a mesma disciplina do VoaRadar (DATA_SOURCES-style): pesquisei de verdade antes de decidir, não assumi.
+
+**Investigação real (WebSearch + WebFetch, 2026-08-16)**: comparei Gemini API free tier x Groq free tier como candidatos zero-cost. Achado decisivo: o Gemini free tier declara publicamente que os prompts podem ser usados pra treinar produtos do Google; o Groq, no tier gratuito e no pago, não retém nem treina com input/output por padrão, e permite Zero Data Retention. Pra um app financeiro, isso pesa mais que limite de requisição — `docs/foundation/security/AI_DATA_POLICY.md` já pede minimizar o que chega ao modelo, mas a política de retenção do provedor é uma camada de risco separada da minimização. **Decisão do usuário, com essa informação em mãos: Groq.**
+
+Modelo verificado ao vivo na doc oficial (`console.groq.com/docs/models`, não assumido de memória): `llama-3.3-70b-versatile`, ativo em produção no momento da implementação.
+
+**Escopo**: só o Financial Analyst (dos 6 agentes do PRD) — "Build small. Validate. Improve." (`CLAUDE.md`), decisão explícita do usuário de não implementar os 6 de uma vez.
+
+**Arquitetura**:
+- `api/financial-analyst.ts`: Vercel Edge Function. `GROQ_API_KEY` só existe aqui, nunca no frontend (`CLAUDE.md` §13). Valida a sessão do usuário chamando `GET /auth/v1/user` do próprio Supabase antes de gastar uma chamada de IA — sem isso, qualquer um poderia bater no endpoint.
+- Contexto enviado ao modelo é só dado agregado do Financial Engine (saldo, histórico mensal, tendência por categoria) — nunca a lista de transações cruas, nunca nome/e-mail do usuário (`docs/foundation/security/AI_DATA_POLICY.md`: "Evitar: banco completo → LLM").
+- Prompt de sistema (`docs/foundation/05_AGENTS.md`): nunca inventar dado fora do contexto, separar fato de estimativa, no máximo 3 observações curtas e acionáveis, nunca prometer retorno de investimento.
+- Resiliência (`docs/foundation/03_ARCHITECTURE.md`): se a Groq falhar, a UI mostra "agente indisponível" sem quebrar o resto do dashboard — cálculo/insight determinístico do V0.2 continua funcionando exatamente igual.
+- Frontend: `FinancialAnalystCard` no dashboard (posição do "Seu Agente Financeiro" do mockup original), sob demanda (botão), não automático a cada carregamento — evita gastar chamada de IA sem necessidade.
+
+**Testado ao vivo em produção**: endpoint rejeita requisição sem token (401) e com token inválido (401); com um usuário de teste real (criado e removido depois do teste), a chamada completa retornou uma análise de verdade em português, coerente com o dado agregado enviado, citando o aumento real na categoria simulada.
+
+Build, 29/29 testes e lint continuam limpos.

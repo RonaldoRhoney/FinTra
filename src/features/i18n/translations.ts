@@ -119,6 +119,11 @@ const pt = {
   goals_target_date: "Prazo: {date}",
   goals_required_monthly: "Pra bater o prazo: guarde {amount}/mês",
   goals_projected_months: "Nesse ritmo, você bate a meta em {months} meses",
+
+  agent_financial_analyst_title: "Seu Agente Financeiro",
+  agent_financial_analyst_cta: "Analisar minha saúde financeira",
+  agent_financial_analyst_loading: "Analisando…",
+  agent_financial_analyst_unavailable: "O agente está indisponível agora — seus cálculos e relatórios continuam funcionando normalmente, só a análise em texto que não pôde ser gerada. Tente de novo em instantes.",
 };
 
 const en: typeof pt = {
@@ -234,6 +239,11 @@ const en: typeof pt = {
   goals_target_date: "Deadline: {date}",
   goals_required_monthly: "To hit the deadline: save {amount}/month",
   goals_projected_months: "At this pace, you'll reach it in {months} months",
+
+  agent_financial_analyst_title: "Your Financial Agent",
+  agent_financial_analyst_cta: "Analyze my financial health",
+  agent_financial_analyst_loading: "Analyzing…",
+  agent_financial_analyst_unavailable: "The agent is unavailable right now — your calculations and reports keep working normally, only the text analysis couldn't be generated. Try again shortly.",
 };
 
 const es: typeof pt = {
@@ -349,6 +359,11 @@ const es: typeof pt = {
   goals_target_date: "Plazo: {date}",
   goals_required_monthly: "Para cumplir el plazo: guarda {amount}/mes",
   goals_projected_months: "A este ritmo, la alcanzarás en {months} meses",
+
+  agent_financial_analyst_title: "Tu Agente Financiero",
+  agent_financial_analyst_cta: "Analizar mi salud financiera",
+  agent_financial_analyst_loading: "Analizando…",
+  agent_financial_analyst_unavailable: "El agente no está disponible ahora — tus cálculos e informes siguen funcionando con normalidad, solo el análisis en texto no pudo generarse. Intenta de nuevo en unos instantes.",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };

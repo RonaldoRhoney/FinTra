@@ -13,6 +13,7 @@ import {
   type Insight,
 } from "../engine/financialEngine";
 import { DashboardSkeleton } from "../components/Skeleton";
+import { FinancialAnalystCard } from "../features/agents/FinancialAnalystCard";
 import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
 import type { TranslationKey } from "../features/i18n/translations";
@@ -53,6 +54,8 @@ export function DashboardPage() {
           value={savingsRate === null ? "—" : formatPercentage(savingsRate)}
         />
       </div>
+
+      <FinancialAnalystCard balance={balance} monthlyHistory={monthlyHistory} categoryTrends={categoryTrends} savingsRate={savingsRate} />
 
       <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 transition hover:shadow-md">
         <h2 className="mb-4 text-sm font-medium text-ink-900/70 dark:text-slate-300">{t("dashboard_insights_title")}</h2>
