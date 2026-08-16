@@ -150,6 +150,23 @@ const pt = {
   agent_investment_education_loading: "Preparando explicação…",
   agent_investment_education_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
   agent_investment_education_disclaimer: "Conteúdo educativo geral — não é recomendação de investimento personalizada.",
+
+  nav_reports: "Relatórios",
+  reports_title: "Relatórios",
+  reports_period_7d: "Últimos 7 dias",
+  reports_period_30d: "Últimos 30 dias",
+  reports_period_current_month: "Este mês",
+  reports_period_last_month: "Mês passado",
+  reports_income: "Entradas",
+  reports_expenses: "Saídas",
+  reports_net: "Líquido",
+  reports_vs_previous: "vs. período anterior",
+  reports_evolution_title: "Evolução mensal",
+  reports_evolution_months_3: "3 meses",
+  reports_evolution_months_6: "6 meses",
+  reports_evolution_months_12: "12 meses",
+  reports_by_category_title: "Gastos por categoria no período",
+  reports_no_data: "Sem transações nesse período ainda.",
 };
 
 const en: typeof pt = {
@@ -296,6 +313,23 @@ const en: typeof pt = {
   agent_investment_education_loading: "Preparing explanation…",
   agent_investment_education_unavailable: "The agent is unavailable right now — try again shortly.",
   agent_investment_education_disclaimer: "General educational content — not personalized investment advice.",
+
+  nav_reports: "Reports",
+  reports_title: "Reports",
+  reports_period_7d: "Last 7 days",
+  reports_period_30d: "Last 30 days",
+  reports_period_current_month: "This month",
+  reports_period_last_month: "Last month",
+  reports_income: "Income",
+  reports_expenses: "Expenses",
+  reports_net: "Net",
+  reports_vs_previous: "vs. previous period",
+  reports_evolution_title: "Monthly evolution",
+  reports_evolution_months_3: "3 months",
+  reports_evolution_months_6: "6 months",
+  reports_evolution_months_12: "12 months",
+  reports_by_category_title: "Spending by category in this period",
+  reports_no_data: "No transactions in this period yet.",
 };
 
 const es: typeof pt = {
@@ -442,6 +476,23 @@ const es: typeof pt = {
   agent_investment_education_loading: "Preparando explicación…",
   agent_investment_education_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
   agent_investment_education_disclaimer: "Contenido educativo general — no es recomendación de inversión personalizada.",
+
+  nav_reports: "Informes",
+  reports_title: "Informes",
+  reports_period_7d: "Últimos 7 días",
+  reports_period_30d: "Últimos 30 días",
+  reports_period_current_month: "Este mes",
+  reports_period_last_month: "Mes pasado",
+  reports_income: "Ingresos",
+  reports_expenses: "Gastos",
+  reports_net: "Neto",
+  reports_vs_previous: "vs. período anterior",
+  reports_evolution_title: "Evolución mensual",
+  reports_evolution_months_3: "3 meses",
+  reports_evolution_months_6: "6 meses",
+  reports_evolution_months_12: "12 meses",
+  reports_by_category_title: "Gastos por categoría en el período",
+  reports_no_data: "Todavía no hay transacciones en este período.",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };

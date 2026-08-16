@@ -148,3 +148,16 @@ Dashboard agora tem os 6 agentes do PRD completos, todos reaproveitando o `runAg
 **Testado em produção**: os 4 endpoints da sessão (behavior-agent incluso) responderam 401 sem token, confirmando deploy e roteamento corretos. **Teste de ponta a ponta com resposta real da IA não foi possível repetir**: o rate limit de e-mail do Supabase seguiu ativo, e uma tentativa de contornar criando usuário direto via SQL (`insert into auth.users` com senha via `pgcrypto`) quebrou o schema esperado pelo GoTrue (erro 500 "Database error querying schema" no login) — o usuário corrompido foi removido imediatamente, sem deixar resíduo. Fica registrado com transparência: a validação desses 4 endpoints se apoia no `runAgent()` já comprovado 2 vezes com sucesso (DEC-006/007), não em uma chamada real nova.
 
 Build, 29/29 testes e lint continuam limpos. Deploy de produção atualizado.
+
+## DEC-010 — V0.5: página de Relatórios (2026-08-16)
+
+Pedido do usuário: "vamos implementar v0.5". A Foundation é enxuta sobre o escopo de "Reports" (só cita a palavra em `02_PRD.md`/`03_ARCHITECTURE.md`/`04_DATA_MODEL.md`, sem detalhar) — apresentei um plano concreto antes de codificar (`CLAUDE.md` §2) e perguntei especificamente sobre visualização (gráfico CSS vs. biblioteca nova). **Decisão do usuário: gráfico simples em CSS, sem dependência nova.**
+
+**Escopo decidido**: relatório calculado sob demanda a partir do que já existe — sem criar as tabelas `reports`/`financial_snapshots` do modelo de dado da Foundation (isso fica pra quando houver pedido real de relatório salvo/exportado, ex: PDF ou agendamento — escopo maior, não pedido agora).
+
+**Implementado**:
+- `previousPeriodRange` e `calculateVariation`, novas funções puras no Financial Engine (com testes) — período anterior de mesma duração e variação percentual segura contra divisão por zero.
+- `ReportsPage`: seletor de período (7 dias / 30 dias / este mês / mês passado), resumo com comparação "vs. período anterior", evolução mensal (3/6/12 meses) em gráfico de barras feito só com `div`+Tailwind (sem lib nova), gastos por categoria do período — tudo reaproveitando funções do Financial Engine já testadas (V0.2).
+- Novo item de navegação "Relatórios".
+
+Build, 34/34 testes (5 novos) e lint continuam limpos. Deploy de produção atualizado.

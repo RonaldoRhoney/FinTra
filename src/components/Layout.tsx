@@ -13,6 +13,7 @@ const links: { to: string; end?: boolean; labelKey: TranslationKey }[] = [
   { to: "/categorias", labelKey: "nav_categories" },
   { to: "/orcamentos", labelKey: "nav_budgets" },
   { to: "/metas", labelKey: "nav_goals" },
+  { to: "/relatorios", labelKey: "nav_reports" },
 ];
 
 export function Layout() {

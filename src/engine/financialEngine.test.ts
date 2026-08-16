@@ -8,9 +8,11 @@ import {
   calculateBudgetProgress,
   calculateGoalProgress,
   calculateSavingsRate,
+  calculateVariation,
   detectAnomalies,
   estimateSavingsCapacity,
   generateInsights,
+  previousPeriodRange,
   projectCashFlow,
   projectGoalCompletion,
   summarizePeriod,
@@ -346,5 +348,39 @@ describe("generateInsights", () => {
       savingsCapacity: { averageMonthlyNet: 0, hasEnoughHistory: false },
     });
     expect(insights).toEqual([]);
+  });
+});
+
+describe("previousPeriodRange", () => {
+  it("retorna o período imediatamente anterior, com a mesma duração", () => {
+    expect(previousPeriodRange({ from: "2026-08-01", to: "2026-08-30" })).toEqual({
+      from: "2026-07-02",
+      to: "2026-07-31",
+    });
+  });
+
+  it("funciona pra um único dia", () => {
+    expect(previousPeriodRange({ from: "2026-08-15", to: "2026-08-15" })).toEqual({
+      from: "2026-08-14",
+      to: "2026-08-14",
+    });
+  });
+
+  it("atravessa a virada de ano corretamente", () => {
+    expect(previousPeriodRange({ from: "2026-01-01", to: "2026-01-07" })).toEqual({
+      from: "2025-12-25",
+      to: "2025-12-31",
+    });
+  });
+});
+
+describe("calculateVariation", () => {
+  it("calcula a variação percentual entre dois valores", () => {
+    expect(calculateVariation(150, 100)).toBeCloseTo(0.5);
+    expect(calculateVariation(50, 100)).toBeCloseTo(-0.5);
+  });
+
+  it("retorna null quando o valor anterior é zero (evita divisão por zero)", () => {
+    expect(calculateVariation(100, 0)).toBeNull();
   });
 });

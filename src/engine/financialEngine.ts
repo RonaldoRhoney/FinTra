@@ -10,6 +10,24 @@ function isWithinRange(date: string, range?: DateRange): boolean {
   return date >= range.from && date <= range.to;
 }
 
+/** Período imediatamente anterior, com a mesma duração — usado pra comparar
+ * "esse período vs. o anterior" nos relatórios (V0.5). */
+export function previousPeriodRange(range: DateRange): DateRange {
+  const from = new Date(`${range.from}T00:00:00Z`);
+  const to = new Date(`${range.to}T00:00:00Z`);
+  const durationMs = to.getTime() - from.getTime();
+  const prevTo = new Date(from.getTime() - 24 * 60 * 60 * 1000);
+  const prevFrom = new Date(prevTo.getTime() - durationMs);
+  return { from: prevFrom.toISOString().slice(0, 10), to: prevTo.toISOString().slice(0, 10) };
+}
+
+/** Variação percentual entre dois valores — null quando o anterior é 0 (evita
+ * divisão por zero e um "+Infinity%" sem sentido pro usuário). */
+export function calculateVariation(current: number, previous: number): number | null {
+  if (previous === 0) return null;
+  return (current - previous) / previous;
+}
+
 export function calculateBalance(accounts: Account[], transactions: Transaction[]): number {
   const initial = accounts.reduce((sum, account) => sum + account.initialBalance, 0);
   const net = transactions.reduce(

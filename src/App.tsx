@@ -13,6 +13,7 @@ import { BudgetsPage } from "./pages/BudgetsPage";
 import { CategoriesPage } from "./pages/CategoriesPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { GoalsPage } from "./pages/GoalsPage";
+import { ReportsPage } from "./pages/ReportsPage";
 import { TransactionsPage } from "./pages/TransactionsPage";
 
 function AuthGate({ children }: { children: React.ReactNode }) {
@@ -55,6 +56,7 @@ function App() {
                       <Route path="categorias" element={<CategoriesPage />} />
                       <Route path="orcamentos" element={<BudgetsPage />} />
                       <Route path="metas" element={<GoalsPage />} />
+                      <Route path="relatorios" element={<ReportsPage />} />
                       <Route path="admin" element={<AdminRoute />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Route>
