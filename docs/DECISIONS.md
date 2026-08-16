@@ -54,3 +54,21 @@ Pedido do usuário: "melhore a fonte e usabilidade, assim também como tornar o 
 - Transições: `:focus-visible` customizado (outline verde da marca), transição de cor/borda global (150ms), fade-in suave ao entrar em cada tela (`fintra-fade-in`), barras de progresso (categoria/orçamento/meta) animam a largura (500ms) em vez de pular direto pro valor final, hover com leve elevação (`shadow-md`) nos cards e `active:scale-[0.98]` nos botões principais.
 
 Build, 13/13 testes e lint continuam limpos. Deploy de produção atualizado.
+
+## DEC-004 — V0.2: Financial Engine completo e seção de Insights (2026-08-16)
+
+Pedido do usuário: "vamos seguir para o próximo passo" — plano apresentado e aprovado ("Aprovado, pode implementar tudo") antes de codificar, como manda `CLAUDE.md` §2.
+
+**Implementado em `financialEngine.ts`** (continua 100% determinístico, sem IA — `docs/foundation/01_ZERO_COST_FIRST.md`):
+- `aggregateMonthlyHistory`: histórico mês a mês (entradas/saídas/líquido), não só o mês corrente.
+- `analyzeCategoryTrends`: compara o mês de referência com a média dos últimos N meses por categoria — exige pelo menos 2 meses de histórico prévio antes de calcular variação (`hasEnoughHistory`), pra não gerar insight enganoso com dado insuficiente.
+- `detectAnomalies`: sinaliza transação isolada muito acima da média histórica da própria categoria — exige `minSamples` transações anteriores (padrão 3) antes de sinalizar qualquer coisa.
+- `estimateSavingsCapacity` / `projectCashFlow`: capacidade média de economia e projeção linear de saldo futuro, ambos retornando `hasEnoughHistory=false` (em vez de projetar com base em 0 ou 1 mês de dado) quando não há histórico suficiente.
+- `projectGoalCompletion`: aporte mensal necessário pra bater o prazo da meta (`targetDate`) e projeção de conclusão baseada no ritmo histórico real de contribuição daquela meta especificamente — nunca confunde fato com estimativa (`docs/foundation/05_AGENTS.md`): sem pelo menos 2 meses distintos de contribuição, `projectedCompletionMonths` fica `null`.
+- `generateInsights`: junta tudo isso em uma lista priorizada. Retorna dados estruturados (`Insight`), não texto pronto — a tela monta a mensagem via i18n (`tf()`, nova função de interpolação `{placeholder}` no `I18nProvider`), pra não hardcodar string em português dentro do motor. "Meta fora do ritmo" só dispara quando o aporte necessário excede a capacidade de economia **real e conhecida** do usuário — nunca com capacidade desconhecida (`savingsCapacity.hasEnoughHistory=false`), pra não gerar alarme falso.
+
+**Dashboard**: nova seção "Insights prioritários" (já prevista em `docs/foundation/08_DASHBOARD_SPEC.md`), acima de "Gastos por categoria".
+
+**Testado**: 29/29 testes (16 novos), cobrindo os casos de "histórico insuficiente" de cada função — é a parte mais importante de testar aqui, porque é onde a Foundation pede mais cuidado ("regra de qualidade de insight": relevância, impacto, confiança, urgência, contexto).
+
+Build, lint e deploy de produção atualizados.

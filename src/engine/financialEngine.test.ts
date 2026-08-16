@@ -2,10 +2,17 @@ import { describe, expect, it } from "vitest";
 import type { Account, Budget, Goal, GoalContribution, Transaction, TransactionCategory } from "../types/finance";
 import {
   aggregateByCategory,
+  aggregateMonthlyHistory,
+  analyzeCategoryTrends,
   calculateBalance,
   calculateBudgetProgress,
   calculateGoalProgress,
   calculateSavingsRate,
+  detectAnomalies,
+  estimateSavingsCapacity,
+  generateInsights,
+  projectCashFlow,
+  projectGoalCompletion,
   summarizePeriod,
 } from "./financialEngine";
 
@@ -151,5 +158,193 @@ describe("calculateGoalProgress", () => {
     const progress = calculateGoalProgress(goal, contributions);
     expect(progress.percentage).toBe(1);
     expect(progress.isComplete).toBe(true);
+  });
+});
+
+describe("aggregateMonthlyHistory", () => {
+  it("gera um ponto por mês, do mais antigo pro mais recente, terminando no mês de referência", () => {
+    const transactions = [
+      tx({ transactionType: "income", amount: 1000, occurredAt: "2026-06-10" }),
+      tx({ transactionType: "expense", amount: 300, occurredAt: "2026-07-10" }),
+      tx({ transactionType: "income", amount: 2000, occurredAt: "2026-08-10" }),
+    ];
+    const history = aggregateMonthlyHistory(transactions, 3, "2026-08");
+    expect(history.map((h) => h.month)).toEqual(["2026-06", "2026-07", "2026-08"]);
+    expect(history[0].income).toBe(1000);
+    expect(history[1].expenses).toBe(300);
+    expect(history[2].income).toBe(2000);
+  });
+
+  it("atravessa a virada de ano corretamente", () => {
+    const history = aggregateMonthlyHistory([], 3, "2026-01");
+    expect(history.map((h) => h.month)).toEqual(["2025-11", "2025-12", "2026-01"]);
+  });
+});
+
+describe("analyzeCategoryTrends", () => {
+  it("calcula a variação do mês atual contra a média dos meses anteriores", () => {
+    const transactions = [
+      tx({ transactionType: "expense", amount: 400, categoryId: "cat-food", occurredAt: "2026-06-10" }),
+      tx({ transactionType: "expense", amount: 400, categoryId: "cat-food", occurredAt: "2026-07-10" }),
+      tx({ transactionType: "expense", amount: 600, categoryId: "cat-food", occurredAt: "2026-08-10" }),
+    ];
+    const [trend] = analyzeCategoryTrends(transactions, categories, "expense", "2026-08", 3);
+    expect(trend.categoryId).toBe("cat-food");
+    expect(trend.averageTotal).toBe(400); // média dos 2 meses anteriores com gasto (junho e julho)
+    expect(trend.hasEnoughHistory).toBe(true);
+    expect(trend.variation).toBeCloseTo(0.5); // 600 vs média de 400 = +50%
+  });
+
+  it("não calcula variação sem histórico suficiente (evita insight enganoso)", () => {
+    const transactions = [tx({ transactionType: "expense", amount: 400, categoryId: "cat-food", occurredAt: "2026-08-10" })];
+    const [trend] = analyzeCategoryTrends(transactions, categories, "expense", "2026-08", 3);
+    expect(trend.hasEnoughHistory).toBe(false);
+    expect(trend.variation).toBeNull();
+  });
+});
+
+describe("detectAnomalies", () => {
+  it("sinaliza uma transação muito acima da média da categoria", () => {
+    const transactions = [
+      tx({ transactionType: "expense", amount: 50, categoryId: "cat-food", occurredAt: "2026-08-01" }),
+      tx({ transactionType: "expense", amount: 55, categoryId: "cat-food", occurredAt: "2026-08-05" }),
+      tx({ transactionType: "expense", amount: 45, categoryId: "cat-food", occurredAt: "2026-08-10" }),
+      tx({ transactionType: "expense", amount: 500, categoryId: "cat-food", occurredAt: "2026-08-15" }),
+    ];
+    const anomalies = detectAnomalies(transactions, categories, { minSamples: 3, thresholdMultiplier: 2 });
+    expect(anomalies).toHaveLength(1);
+    expect(anomalies[0].amount).toBe(500);
+  });
+
+  it("não sinaliza nada com poucas transações na categoria (evita falso positivo)", () => {
+    const transactions = [
+      tx({ transactionType: "expense", amount: 50, categoryId: "cat-food", occurredAt: "2026-08-01" }),
+      tx({ transactionType: "expense", amount: 500, categoryId: "cat-food", occurredAt: "2026-08-15" }),
+    ];
+    expect(detectAnomalies(transactions, categories, { minSamples: 3 })).toEqual([]);
+  });
+});
+
+describe("estimateSavingsCapacity", () => {
+  it("calcula a média do líquido mensal com histórico suficiente", () => {
+    const history = [
+      { month: "2026-06", income: 3000, expenses: 2000, net: 1000 },
+      { month: "2026-07", income: 3000, expenses: 2500, net: 500 },
+    ];
+    expect(estimateSavingsCapacity(history, 2)).toEqual({ averageMonthlyNet: 750, hasEnoughHistory: true });
+  });
+
+  it("marca hasEnoughHistory=false com poucos meses de movimentação real", () => {
+    const history = [
+      { month: "2026-06", income: 0, expenses: 0, net: 0 },
+      { month: "2026-07", income: 3000, expenses: 2500, net: 500 },
+    ];
+    expect(estimateSavingsCapacity(history, 2).hasEnoughHistory).toBe(false);
+  });
+});
+
+describe("projectCashFlow", () => {
+  it("projeta o saldo futuro a partir da média histórica", () => {
+    const history = [
+      { month: "2026-06", income: 3000, expenses: 2500, net: 500 },
+      { month: "2026-07", income: 3000, expenses: 2500, net: 500 },
+    ];
+    const projection = projectCashFlow(1000, history, 3, 2);
+    expect(projection.hasEnoughHistory).toBe(true);
+    expect(projection.projectedBalances).toEqual([1500, 2000, 2500]);
+  });
+
+  it("retorna hasEnoughHistory=false sem dado suficiente, em vez de projetar no vazio", () => {
+    const projection = projectCashFlow(1000, [], 3, 2);
+    expect(projection.hasEnoughHistory).toBe(false);
+    expect(projection.projectedBalances).toEqual([]);
+  });
+});
+
+describe("projectGoalCompletion", () => {
+  it("calcula o aporte mensal necessário pra bater o prazo", () => {
+    const goal: Goal = { id: "g1", name: "Viagem", targetAmount: 4800, targetDate: "2026-12-15" };
+    const projection = projectGoalCompletion(goal, [], "2026-08-15");
+    expect(projection.requiredMonthlyContribution).toBeCloseTo(1200); // 4800 / 4 meses
+  });
+
+  it("projeta conclusão a partir do ritmo histórico de contribuição da própria meta", () => {
+    const goal: Goal = { id: "g1", name: "Viagem", targetAmount: 3000, targetDate: null };
+    const contributions: GoalContribution[] = [
+      { id: "c1", goalId: "g1", amount: 500, contributedAt: "2026-06-10" },
+      { id: "c2", goalId: "g1", amount: 500, contributedAt: "2026-07-10" },
+    ];
+    const projection = projectGoalCompletion(goal, contributions, "2026-08-15");
+    expect(projection.projectedCompletionMonths).toBe(4); // falta 2000, ritmo de 500/mês (1000 acumulado em 2 meses)
+  });
+
+  it("não projeta conclusão com contribuição em um único mês (sem ritmo pra medir)", () => {
+    const goal: Goal = { id: "g1", name: "Viagem", targetAmount: 3000, targetDate: null };
+    const contributions: GoalContribution[] = [{ id: "c1", goalId: "g1", amount: 500, contributedAt: "2026-08-10" }];
+    const projection = projectGoalCompletion(goal, contributions, "2026-08-15");
+    expect(projection.projectedCompletionMonths).toBeNull();
+  });
+});
+
+describe("generateInsights", () => {
+  it("gera insight de categoria fora do padrão só quando há histórico suficiente", () => {
+    const insights = generateInsights({
+      categoryTrends: [
+        { categoryId: "cat-food", name: "Alimentação", color: "#eab308", currentTotal: 1000, averageTotal: 500, variation: 1, hasEnoughHistory: true },
+      ],
+      anomalies: [],
+      cashFlow: { monthsAhead: 3, projectedBalances: [], averageMonthlyNet: 0, hasEnoughHistory: false },
+      goalProjections: [],
+      savingsCapacity: { averageMonthlyNet: 0, hasEnoughHistory: false },
+    });
+    expect(insights).toEqual([{ kind: "category_spike", categoryName: "Alimentação", variation: 1, amount: 1000 }]);
+  });
+
+  it("só sinaliza meta fora do ritmo quando o aporte necessário excede a capacidade de economia real", () => {
+    const insights = generateInsights({
+      categoryTrends: [],
+      anomalies: [],
+      cashFlow: { monthsAhead: 3, projectedBalances: [], averageMonthlyNet: 0, hasEnoughHistory: false },
+      goalProjections: [
+        {
+          goalId: "g1",
+          goalName: "Viagem",
+          targetAmount: 5000,
+          currentAmount: 0,
+          remaining: 5000,
+          percentage: 0,
+          isComplete: false,
+          requiredMonthlyContribution: 1000,
+          projectedCompletionMonths: null,
+        },
+      ],
+      savingsCapacity: { averageMonthlyNet: 600, hasEnoughHistory: true },
+    });
+    expect(insights).toEqual([
+      { kind: "goal_off_track", goalName: "Viagem", requiredMonthlyContribution: 1000, availableCapacity: 600 },
+    ]);
+  });
+
+  it("não sinaliza meta fora do ritmo sem capacidade de economia conhecida (evita alarme falso)", () => {
+    const insights = generateInsights({
+      categoryTrends: [],
+      anomalies: [],
+      cashFlow: { monthsAhead: 3, projectedBalances: [], averageMonthlyNet: 0, hasEnoughHistory: false },
+      goalProjections: [
+        {
+          goalId: "g1",
+          goalName: "Viagem",
+          targetAmount: 5000,
+          currentAmount: 0,
+          remaining: 5000,
+          percentage: 0,
+          isComplete: false,
+          requiredMonthlyContribution: 1000,
+          projectedCompletionMonths: null,
+        },
+      ],
+      savingsCapacity: { averageMonthlyNet: 0, hasEnoughHistory: false },
+    });
+    expect(insights).toEqual([]);
   });
 });
