@@ -1,15 +1,50 @@
+import { Navigate, Route, BrowserRouter, Routes } from "react-router-dom";
+import { Layout } from "./components/Layout";
+import { AppDataProvider } from "./features/data/AppDataProvider";
+import { AuthProvider, useAuth } from "./features/auth/AuthProvider";
+import { AccountsPage } from "./pages/AccountsPage";
+import { AuthPage } from "./pages/AuthPage";
+import { BudgetsPage } from "./pages/BudgetsPage";
+import { CategoriesPage } from "./pages/CategoriesPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { GoalsPage } from "./pages/GoalsPage";
+import { TransactionsPage } from "./pages/TransactionsPage";
+
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-[#f5f7fb]">
+        <p className="text-sm text-ink-900/50">Carregando…</p>
+      </div>
+    );
+  }
+
+  if (!user) return <AuthPage />;
+
+  return <AppDataProvider>{children}</AppDataProvider>;
+}
+
 function App() {
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-3 px-4 text-center">
-      <span className="rounded-full bg-fintra-500/10 px-3 py-1 font-mono text-xs tracking-wide text-fintra-500">
-        FinTra · Foundation v0.2
-      </span>
-      <h1 className="text-3xl font-semibold text-ink-900">Em construção</h1>
-      <p className="max-w-md text-sm text-ink-900/60">
-        Plataforma de inteligência financeira pessoal da RhoneyInc. V0.1 (Foundation) em andamento — veja{" "}
-        <code className="rounded bg-black/5 px-1.5 py-0.5">docs/PROJECT_CONTEXT.md</code>.
-      </p>
-    </main>
+    <BrowserRouter>
+      <AuthProvider>
+        <AuthGate>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<DashboardPage />} />
+              <Route path="contas" element={<AccountsPage />} />
+              <Route path="transacoes" element={<TransactionsPage />} />
+              <Route path="categorias" element={<CategoriesPage />} />
+              <Route path="orcamentos" element={<BudgetsPage />} />
+              <Route path="metas" element={<GoalsPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </AuthGate>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
