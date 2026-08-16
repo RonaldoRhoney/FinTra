@@ -161,3 +161,13 @@ Pedido do usuário: "vamos implementar v0.5". A Foundation é enxuta sobre o esc
 - Novo item de navegação "Relatórios".
 
 Build, 34/34 testes (5 novos) e lint continuam limpos. Deploy de produção atualizado.
+
+## DEC-011 — V0.6: Open Finance investigado e confirmado inviável sem custo (2026-08-16)
+
+Pedido do usuário: "siga para v0.6". `PARTICIPATION_MODEL.md` já marca Open Finance como BLOCKER explícito ("Claude Code NÃO deve decidir isso sozinho") — nenhuma implementação foi feita.
+
+**Investigação real** (WebSearch + WebFetch, documento completo em `docs/foundation/open-finance/PARTICIPATION_MODEL_INVESTIGATION.md`): integradores certificados no Brasil não são zero-custo — Pluggy a partir de ~R$2.500/mês, Belvo ~R$6.000/mês. A oferta gratuita "Meu Pluggy" foi verificada direto na página oficial da Pluggy: é genuinamente grátis, mas **explicitamente restrita a uso pessoal, uma pessoa conectando as próprias contas (um CPF)** — citação direta encontrada: *"Para atender clientes, conectar contas de múltiplos CPFs ou transformar em um produto comercial, veja os planos [pagos]."* Como o FinTra é multiusuário por natureza, esse caminho gratuito não se aplica, independente de o produto gerar receita.
+
+**Conclusão**: não existe caminho zero-custo real pra Open Finance no Brasil aplicável ao FinTra. Os únicos caminhos são pagar um integrador ou a RhoneyInc virar participante direto do Open Finance (autorização do Banco Central, fora do escopo de uma decisão de produto isolada). Nenhuma das 8 perguntas originais do `PARTICIPATION_MODEL.md` foi respondida — essa investigação só eliminou a hipótese "existe uma opção grátis que resolve isso".
+
+**V0.6 continua BLOQUEADO.** O usuário pediu pra pausar a sessão logo depois dessa investigação ("pare por enquanto") — sem decisão tomada sobre pagar um integrador ou seguir pro V0.7 ainda.
