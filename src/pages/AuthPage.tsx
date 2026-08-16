@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from "react";
 import { useAuth } from "../features/auth/AuthProvider";
+import { useI18n } from "../features/i18n/I18nProvider";
 
 export function AuthPage() {
   const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { t } = useI18n();
   const [googleLoading, setGoogleLoading] = useState(false);
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -17,7 +19,7 @@ export function AuthPage() {
     try {
       await signInWithGoogle();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Não foi possível entrar com Google.");
+      setError(err instanceof Error ? err.message : "Google sign-in failed.");
       setGoogleLoading(false);
     }
   }
@@ -42,50 +44,48 @@ export function AuthPage() {
 
   return (
     <main className="flex min-h-svh items-center justify-center bg-[#f5f7fb] px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-black/5 bg-white p-8 shadow-sm">
-        <h1 className="text-xl font-semibold text-ink-900">FinTra</h1>
-        <p className="mt-1 text-sm text-ink-900/60">
-          {mode === "login" ? "Entre na sua conta" : "Crie sua conta"}
+      <div className="w-full max-w-sm rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-8 shadow-sm">
+        <h1 className="text-xl font-semibold text-ink-900 dark:text-slate-100">{t("auth_title")}</h1>
+        <p className="mt-1 text-sm text-ink-900/60 dark:text-slate-400">
+          {mode === "login" ? t("auth_login_subtitle") : t("auth_signup_subtitle")}
         </p>
 
         <button
           type="button"
           onClick={handleGoogleClick}
           disabled={googleLoading}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-black/10 px-3 py-2 text-sm font-medium text-ink-900 hover:bg-black/5 disabled:opacity-60"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm font-medium text-ink-900 dark:text-slate-100 hover:bg-black/5 dark:bg-white/10 disabled:opacity-60"
         >
           <GoogleIcon />
-          {googleLoading ? "Redirecionando…" : "Continuar com Google"}
+          {googleLoading ? t("auth_google_redirecting") : t("auth_google")}
         </button>
 
-        <div className="my-5 flex items-center gap-3 text-xs text-ink-900/40">
+        <div className="my-5 flex items-center gap-3 text-xs text-ink-900/40 dark:text-slate-500">
           <span className="h-px flex-1 bg-black/10" />
-          ou
+          {t("auth_or")}
           <span className="h-px flex-1 bg-black/10" />
         </div>
 
         {signupDone ? (
-          <p className="mt-6 rounded-lg bg-fintra-500/10 p-3 text-sm text-fintra-500">
-            Cadastro criado! Confirme seu e-mail (se exigido) e faça login.
-          </p>
+          <p className="mt-6 rounded-lg bg-fintra-500/10 p-3 text-sm text-fintra-500">{t("auth_signup_done")}</p>
         ) : (
           <form className="mt-6 flex flex-col gap-3" onSubmit={handleSubmit}>
             <input
               type="email"
               required
-              placeholder="E-mail"
+              placeholder={t("auth_email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border border-black/10 px-3 py-2 text-sm outline-fintra-500"
+              className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
             />
             <input
               type="password"
               required
               minLength={6}
-              placeholder="Senha"
+              placeholder={t("auth_password")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="rounded-lg border border-black/10 px-3 py-2 text-sm outline-fintra-500"
+              className="rounded-lg border border-black/10 dark:border-white/10 px-3 py-2 text-sm outline-fintra-500"
             />
             {error && <p className="text-sm text-red-600">{error}</p>}
             <button
@@ -93,7 +93,7 @@ export function AuthPage() {
               disabled={loading}
               className="mt-1 rounded-lg bg-fintra-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
             >
-              {loading ? "Aguarde…" : mode === "login" ? "Entrar" : "Cadastrar"}
+              {loading ? t("auth_wait") : mode === "login" ? t("auth_login") : t("auth_signup")}
             </button>
           </form>
         )}
@@ -107,7 +107,7 @@ export function AuthPage() {
           }}
           className="mt-4 text-sm text-fintra-500 hover:underline"
         >
-          {mode === "login" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}
+          {mode === "login" ? t("auth_switch_to_signup") : t("auth_switch_to_login")}
         </button>
       </div>
     </main>

@@ -5,14 +5,16 @@ import {
   categoriesRepo,
   goalContributionsRepo,
   goalsRepo,
+  profileRepo,
   transactionsRepo,
 } from "../../lib/repositories";
-import type { Account, Budget, Goal, GoalContribution, Transaction, TransactionCategory } from "../../types/finance";
+import type { Account, Budget, Goal, GoalContribution, Profile, Transaction, TransactionCategory } from "../../types/finance";
 import { useAuth } from "../auth/AuthProvider";
 
 interface AppDataContextValue {
   loading: boolean;
   error: string | null;
+  profile: Profile | null;
   accounts: Account[];
   categories: TransactionCategory[];
   transactions: Transaction[];
@@ -28,6 +30,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -40,14 +43,17 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     setError(null);
     try {
-      const [accountsData, categoriesData, transactionsData, budgetsData, goalsData, contributionsData] = await Promise.all([
-        accountsRepo.list(),
-        categoriesRepo.list(),
-        transactionsRepo.list(),
-        budgetsRepo.list(),
-        goalsRepo.list(),
-        goalContributionsRepo.list(),
-      ]);
+      const [profileData, accountsData, categoriesData, transactionsData, budgetsData, goalsData, contributionsData] =
+        await Promise.all([
+          profileRepo.getCurrent(),
+          accountsRepo.list(),
+          categoriesRepo.list(),
+          transactionsRepo.list(),
+          budgetsRepo.list(),
+          goalsRepo.list(),
+          goalContributionsRepo.list(),
+        ]);
+      setProfile(profileData);
       setAccounts(accountsData);
       setCategories(categoriesData);
       setTransactions(transactionsData);
@@ -67,7 +73,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   return (
     <AppDataContext.Provider
-      value={{ loading, error, accounts, categories, transactions, budgets, goals, goalContributions, refetch }}
+      value={{ loading, error, profile, accounts, categories, transactions, budgets, goals, goalContributions, refetch }}
     >
       {children}
     </AppDataContext.Provider>

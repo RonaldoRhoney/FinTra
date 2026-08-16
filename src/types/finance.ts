@@ -1,5 +1,13 @@
 export type TransactionType = "income" | "expense";
 
+export type UserRole = "user" | "admin";
+
+export interface Profile {
+  id: string;
+  displayName: string | null;
+  role: UserRole;
+}
+
 export type AccountType = "corrente" | "poupanca" | "carteira" | "investimento" | "outro";
 
 export interface Account {

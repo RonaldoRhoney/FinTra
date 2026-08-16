@@ -4,9 +4,14 @@ import type {
   Budget,
   Goal,
   GoalContribution,
+  Profile,
   Transaction,
   TransactionCategory,
 } from "../types/finance";
+
+function mapProfile(row: any): Profile {
+  return { id: row.id, displayName: row.display_name, role: row.role };
+}
 
 function mapAccount(row: any): Account {
   return {
@@ -51,6 +56,40 @@ function assertOk<T>(data: T | null, error: { message: string } | null): T {
   if (data === null) throw new Error("Operação não retornou dado.");
   return data;
 }
+
+export const profileRepo = {
+  async getCurrent(): Promise<Profile> {
+    const { data: userData } = await supabase.auth.getUser();
+    const { data, error } = await supabase.from("profiles").select("*").eq("id", userData.user?.id).single();
+    return mapProfile(assertOk(data, error));
+  },
+};
+
+export interface AdminMetrics {
+  totalUsers: number;
+  totalAccounts: number;
+  totalTransactions: number;
+  totalIncome: number;
+  totalExpenses: number;
+  newUsers7d: number;
+  newTransactions7d: number;
+}
+
+export const adminRepo = {
+  async getPlatformMetrics(): Promise<AdminMetrics> {
+    const { data, error } = await supabase.rpc("admin_platform_metrics").single();
+    const row = assertOk(data as any, error);
+    return {
+      totalUsers: Number(row.total_users),
+      totalAccounts: Number(row.total_accounts),
+      totalTransactions: Number(row.total_transactions),
+      totalIncome: Number(row.total_income),
+      totalExpenses: Number(row.total_expenses),
+      newUsers7d: Number(row.new_users_7d),
+      newTransactions7d: Number(row.new_transactions_7d),
+    };
+  },
+};
 
 export const accountsRepo = {
   async list(): Promise<Account[]> {

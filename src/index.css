@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-fintra-500: #16a34a;
   --color-fintra-400: #22c55e;
@@ -10,4 +12,10 @@ body {
   margin: 0;
   font-family: system-ui, "Segoe UI", Roboto, sans-serif;
   background: #f5f7fb;
+  color: #0f172a;
+}
+
+.dark body {
+  background: #0b1220;
+  color: #e2e8f0;
 }

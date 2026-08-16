@@ -1,8 +1,11 @@
 import { Navigate, Route, BrowserRouter, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { AppDataProvider } from "./features/data/AppDataProvider";
+import { AppDataProvider, useAppData } from "./features/data/AppDataProvider";
 import { AuthProvider, useAuth } from "./features/auth/AuthProvider";
+import { I18nProvider, useI18n } from "./features/i18n/I18nProvider";
+import { ThemeProvider } from "./features/theme/ThemeProvider";
 import { AccountsPage } from "./pages/AccountsPage";
+import { AdminPage } from "./pages/AdminPage";
 import { AuthPage } from "./pages/AuthPage";
 import { BudgetsPage } from "./pages/BudgetsPage";
 import { CategoriesPage } from "./pages/CategoriesPage";
@@ -12,11 +15,12 @@ import { TransactionsPage } from "./pages/TransactionsPage";
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const { t } = useI18n();
 
   if (loading) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-[#f5f7fb]">
-        <p className="text-sm text-ink-900/50">Carregando…</p>
+      <div className="flex min-h-svh items-center justify-center bg-[#f5f7fb] dark:bg-[#0b1220]">
+        <p className="text-sm text-ink-900/50 dark:text-slate-500">{t("loading")}</p>
       </div>
     );
   }
@@ -26,24 +30,35 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   return <AppDataProvider>{children}</AppDataProvider>;
 }
 
+function AdminRoute() {
+  const { profile } = useAppData();
+  if (profile?.role !== "admin") return <Navigate to="/" replace />;
+  return <AdminPage />;
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AuthGate>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route index element={<DashboardPage />} />
-              <Route path="contas" element={<AccountsPage />} />
-              <Route path="transacoes" element={<TransactionsPage />} />
-              <Route path="categorias" element={<CategoriesPage />} />
-              <Route path="orcamentos" element={<BudgetsPage />} />
-              <Route path="metas" element={<GoalsPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Routes>
-        </AuthGate>
-      </AuthProvider>
+      <ThemeProvider>
+        <I18nProvider>
+          <AuthProvider>
+            <AuthGate>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route index element={<DashboardPage />} />
+                  <Route path="contas" element={<AccountsPage />} />
+                  <Route path="transacoes" element={<TransactionsPage />} />
+                  <Route path="categorias" element={<CategoriesPage />} />
+                  <Route path="orcamentos" element={<BudgetsPage />} />
+                  <Route path="metas" element={<GoalsPage />} />
+                  <Route path="admin" element={<AdminRoute />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Route>
+              </Routes>
+            </AuthGate>
+          </AuthProvider>
+        </I18nProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
