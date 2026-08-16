@@ -72,3 +72,16 @@ Pedido do usuário: "vamos seguir para o próximo passo" — plano apresentado e
 **Testado**: 29/29 testes (16 novos), cobrindo os casos de "histórico insuficiente" de cada função — é a parte mais importante de testar aqui, porque é onde a Foundation pede mais cuidado ("regra de qualidade de insight": relevância, impacto, confiança, urgência, contexto).
 
 Build, lint e deploy de produção atualizados.
+
+## DEC-005 — V0.3: projeção de meta na própria tela de Metas (2026-08-16)
+
+Pedido do usuário: "siga o fluxo natural, v0.3" — escopo já descrito e implicitamente aprovado na conclusão do DEC-004 (goals já existiam desde o V0.1; o que faltava era só cruzar a projeção do motor com a tela).
+
+**Implementado**: `GoalsPage` trocou `calculateGoalProgress` por `projectGoalCompletion` (superset, mesma forma). Cada card de meta agora mostra, quando aplicável:
+- Prazo definido (`target_date`), se a meta tiver um.
+- Aporte mensal necessário pra bater o prazo (`requiredMonthlyContribution`) — só aparece quando há prazo e a meta não está completa.
+- Projeção "nesse ritmo, você bate a meta em X meses" (`projectedCompletionMonths`) — só aparece quando há pelo menos 2 meses distintos de contribuição registrados; sem isso, fica em silêncio em vez de arriscar um número (mesmo cuidado do DEC-004).
+
+Nenhuma mudança de schema — é só o motor do V0.2 (já testado) alimentando uma tela que já existia.
+
+Build, 29/29 testes e lint continuam limpos. Deploy de produção atualizado.

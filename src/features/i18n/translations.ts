@@ -116,6 +116,9 @@ const pt = {
   goals_contribute_title: "Guardar dinheiro",
   goals_contribute_amount: "Valor a guardar (R$)",
   goals_contribute_submit: "Confirmar",
+  goals_target_date: "Prazo: {date}",
+  goals_required_monthly: "Pra bater o prazo: guarde {amount}/mês",
+  goals_projected_months: "Nesse ritmo, você bate a meta em {months} meses",
 };
 
 const en: typeof pt = {
@@ -228,6 +231,9 @@ const en: typeof pt = {
   goals_contribute_title: "Save money",
   goals_contribute_amount: "Amount to save",
   goals_contribute_submit: "Confirm",
+  goals_target_date: "Deadline: {date}",
+  goals_required_monthly: "To hit the deadline: save {amount}/month",
+  goals_projected_months: "At this pace, you'll reach it in {months} months",
 };
 
 const es: typeof pt = {
@@ -340,6 +346,9 @@ const es: typeof pt = {
   goals_contribute_title: "Guardar dinero",
   goals_contribute_amount: "Monto a guardar",
   goals_contribute_submit: "Confirmar",
+  goals_target_date: "Plazo: {date}",
+  goals_required_monthly: "Para cumplir el plazo: guarda {amount}/mes",
+  goals_projected_months: "A este ritmo, la alcanzarás en {months} meses",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };

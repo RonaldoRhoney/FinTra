@@ -9,7 +9,7 @@
 ## Versões seguintes (visão da Foundation, não comprometidas em detalhe)
 
 - **V0.2** — Financial Engine completo. **STATUS: CONCLUÍDA** (2026-08-16, DEC-004). Histórico mensal, média/variação por categoria, detecção de gasto fora do padrão, fluxo de caixa projetado, capacidade de economia, projeção de meta, seção "Insights prioritários" no dashboard. Recorrência de transação (ex: "assinatura mensal") ainda não implementada — não fazia parte do plano aprovado, fica pra quando for pedida explicitamente.
-- **V0.3** — Goals. *(Já coberto em parte pelo V0.1 — metas com contribuição manual já existem; o que falta aqui é o que o V0.2 adicionar de projeção puder aplicar a elas, ex: "nesse ritmo, você bate a meta em X meses".)*
+- **V0.3** — Goals. **STATUS: CONCLUÍDA** (2026-08-16, DEC-005). Tela de Metas agora mostra prazo, aporte mensal necessário e projeção "nesse ritmo, bate a meta em X meses" — usando o motor do V0.2.
 - **V0.4** — Intelligence/Agents.
 - **V0.5** — Reports.
 - **V0.6** — Open Finance. **Bloqueada até resposta às 8 perguntas de `docs/foundation/open-finance/PARTICIPATION_MODEL.md`** (participante direto vs. integrador, responsabilidade por agente de tratamento, quem armazena/processa dado, DPA, custos) — decisão que não cabe ao Claude Code tomar sozinho.

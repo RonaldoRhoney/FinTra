@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { calculateGoalProgress } from "../engine/financialEngine";
+import { projectGoalCompletion } from "../engine/financialEngine";
 import { goalContributionsRepo, goalsRepo } from "../lib/repositories";
 import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
@@ -10,7 +10,7 @@ import { formatCurrency, formatPercentage } from "../lib/format";
 
 export function GoalsPage() {
   const { goals, goalContributions, refetch } = useAppData();
-  const { t } = useI18n();
+  const { t, tf } = useI18n();
   const confirm = useConfirm();
   const { showToast } = useToast();
   const [name, setName] = useState("");
@@ -79,7 +79,7 @@ export function GoalsPage() {
           <p className="text-sm text-ink-900/50 dark:text-slate-500">{t("goals_empty")}</p>
         ) : (
           goals.map((g) => {
-            const progress = calculateGoalProgress(g, goalContributions);
+            const progress = projectGoalCompletion(g, goalContributions);
             return (
               <div key={g.id} className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 transition hover:shadow-md">
                 <div className="mb-2 flex items-center justify-between">
@@ -95,6 +95,21 @@ export function GoalsPage() {
                   {formatCurrency(progress.currentAmount)} de {formatCurrency(progress.targetAmount)} (
                   {formatPercentage(progress.percentage)})
                 </p>
+                {g.targetDate && (
+                  <p className="mt-1 text-xs text-ink-900/50 dark:text-slate-500">
+                    {tf("goals_target_date", { date: new Date(g.targetDate + "T00:00:00").toLocaleDateString() })}
+                  </p>
+                )}
+                {!progress.isComplete && progress.requiredMonthlyContribution !== null && (
+                  <p className="mt-1 text-xs font-medium text-fintra-500">
+                    {tf("goals_required_monthly", { amount: formatCurrency(progress.requiredMonthlyContribution) })}
+                  </p>
+                )}
+                {!progress.isComplete && progress.projectedCompletionMonths !== null && (
+                  <p className="mt-1 text-xs text-ink-900/60 dark:text-slate-400">
+                    {tf("goals_projected_months", { months: String(progress.projectedCompletionMonths) })}
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => setContributingGoalId(g.id)}
