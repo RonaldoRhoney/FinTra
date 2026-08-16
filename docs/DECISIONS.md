@@ -106,3 +106,17 @@ Modelo verificado ao vivo na doc oficial (`console.groq.com/docs/models`, não a
 **Testado ao vivo em produção**: endpoint rejeita requisição sem token (401) e com token inválido (401); com um usuário de teste real (criado e removido depois do teste), a chamada completa retornou uma análise de verdade em português, coerente com o dado agregado enviado, citando o aumento real na categoria simulada.
 
 Build, 29/29 testes e lint continuam limpos.
+
+## DEC-007 — V0.4: segundo agente (Savings Coach) + base compartilhada de agentes (2026-08-16)
+
+Pedido do usuário: "siga o fluxo natural" — continuação direta do V0.4 em andamento (DEC-006), próximo agente do PRD.
+
+**Refatoração pra evitar duplicação** (2 agentes já formam um padrão real, não é abstração prematura): lógica compartilhada de auth+chamada à Groq+resiliência movida pra `api/_shared/agent.ts` (`runAgent`), cada endpoint (`api/financial-analyst.ts`, `api/savings-coach.ts`) só define seu próprio prompt de sistema por idioma. No frontend, `AgentCard` genérico substitui o `FinancialAnalystCard` específico; `src/lib/agents.ts` virou um `callAgent(endpoint, payload)` único.
+
+**Savings Coach** (`docs/foundation/05_AGENTS.md`): encontra oportunidades de economia e quantifica o impacto. Contexto = tendência por categoria + progresso de orçamento do mês (`calculateBudgetProgress`), ambos já calculados no dashboard — nenhuma chamada nova ao banco. Prompt de sistema exige que toda sugestão venha com valor estimado de economia (ex: "R$ 120/mês"), mesma regra do PRD ("Savings Coach... quantifica impacto").
+
+Dashboard agora tem os dois agentes lado a lado (grid 2 colunas), cada um independente — falha de um não afeta o outro.
+
+**Testado ao vivo em produção**: 401 sem token; com usuário de teste real, resposta coerente com valores de economia calculados a partir do dado simulado (categoria acima do orçamento identificada corretamente, com valor estimado de corte).
+
+Build, 29/29 testes e lint continuam limpos.

@@ -124,6 +124,11 @@ const pt = {
   agent_financial_analyst_cta: "Analisar minha saúde financeira",
   agent_financial_analyst_loading: "Analisando…",
   agent_financial_analyst_unavailable: "O agente está indisponível agora — seus cálculos e relatórios continuam funcionando normalmente, só a análise em texto que não pôde ser gerada. Tente de novo em instantes.",
+
+  agent_savings_coach_title: "Savings Coach",
+  agent_savings_coach_cta: "Onde posso economizar?",
+  agent_savings_coach_loading: "Buscando oportunidades…",
+  agent_savings_coach_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
 };
 
 const en: typeof pt = {
@@ -244,6 +249,11 @@ const en: typeof pt = {
   agent_financial_analyst_cta: "Analyze my financial health",
   agent_financial_analyst_loading: "Analyzing…",
   agent_financial_analyst_unavailable: "The agent is unavailable right now — your calculations and reports keep working normally, only the text analysis couldn't be generated. Try again shortly.",
+
+  agent_savings_coach_title: "Savings Coach",
+  agent_savings_coach_cta: "Where can I save?",
+  agent_savings_coach_loading: "Looking for opportunities…",
+  agent_savings_coach_unavailable: "The agent is unavailable right now — try again shortly.",
 };
 
 const es: typeof pt = {
@@ -364,6 +374,11 @@ const es: typeof pt = {
   agent_financial_analyst_cta: "Analizar mi salud financiera",
   agent_financial_analyst_loading: "Analizando…",
   agent_financial_analyst_unavailable: "El agente no está disponible ahora — tus cálculos e informes siguen funcionando con normalidad, solo el análisis en texto no pudo generarse. Intenta de nuevo en unos instantes.",
+
+  agent_savings_coach_title: "Savings Coach",
+  agent_savings_coach_cta: "¿Dónde puedo ahorrar?",
+  agent_savings_coach_loading: "Buscando oportunidades…",
+  agent_savings_coach_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };

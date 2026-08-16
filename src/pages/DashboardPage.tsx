@@ -3,6 +3,7 @@ import {
   aggregateMonthlyHistory,
   analyzeCategoryTrends,
   calculateBalance,
+  calculateBudgetProgress,
   calculateSavingsRate,
   detectAnomalies,
   estimateSavingsCapacity,
@@ -13,15 +14,16 @@ import {
   type Insight,
 } from "../engine/financialEngine";
 import { DashboardSkeleton } from "../components/Skeleton";
-import { FinancialAnalystCard } from "../features/agents/FinancialAnalystCard";
+import { AgentCard } from "../features/agents/AgentCard";
 import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
 import type { TranslationKey } from "../features/i18n/translations";
+import { financialAnalystRepo, savingsCoachRepo } from "../lib/agents";
 import { currentMonth, formatCurrency, formatPercentage } from "../lib/format";
 
 export function DashboardPage() {
-  const { loading, error, accounts, categories, transactions, goals, goalContributions } = useAppData();
-  const { t, tf } = useI18n();
+  const { loading, error, accounts, categories, transactions, goals, goalContributions, budgets } = useAppData();
+  const { t, tf, locale } = useI18n();
 
   if (loading) return <DashboardSkeleton />;
   if (error) return <p className="text-sm text-red-600">{error}</p>;
@@ -40,6 +42,9 @@ export function DashboardPage() {
   const savingsCapacity = estimateSavingsCapacity(monthlyHistory);
   const goalProjections = goals.map((g) => ({ ...projectGoalCompletion(g, goalContributions), goalName: g.name }));
   const insights = generateInsights({ categoryTrends, anomalies, cashFlow, goalProjections, savingsCapacity });
+  const budgetsProgress = budgets
+    .filter((b) => b.referenceMonth === month)
+    .map((b) => calculateBudgetProgress(b, transactions));
 
   return (
     <div className="fintra-fade-in flex flex-col gap-6">
@@ -55,7 +60,22 @@ export function DashboardPage() {
         />
       </div>
 
-      <FinancialAnalystCard balance={balance} monthlyHistory={monthlyHistory} categoryTrends={categoryTrends} savingsRate={savingsRate} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <AgentCard
+          titleKey="agent_financial_analyst_title"
+          ctaKey="agent_financial_analyst_cta"
+          loadingKey="agent_financial_analyst_loading"
+          unavailableKey="agent_financial_analyst_unavailable"
+          run={() => financialAnalystRepo.analyze({ locale, balance, monthlyHistory, categoryTrends, savingsRate })}
+        />
+        <AgentCard
+          titleKey="agent_savings_coach_title"
+          ctaKey="agent_savings_coach_cta"
+          loadingKey="agent_savings_coach_loading"
+          unavailableKey="agent_savings_coach_unavailable"
+          run={() => savingsCoachRepo.suggest({ locale, categoryTrends, budgetsProgress })}
+        />
+      </div>
 
       <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-slate-800 p-5 transition hover:shadow-md">
         <h2 className="mb-4 text-sm font-medium text-ink-900/70 dark:text-slate-300">{t("dashboard_insights_title")}</h2>
