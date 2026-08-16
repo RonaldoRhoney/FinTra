@@ -171,3 +171,13 @@ Pedido do usuário: "siga para v0.6". `PARTICIPATION_MODEL.md` já marca Open Fi
 **Conclusão**: não existe caminho zero-custo real pra Open Finance no Brasil aplicável ao FinTra. Os únicos caminhos são pagar um integrador ou a RhoneyInc virar participante direto do Open Finance (autorização do Banco Central, fora do escopo de uma decisão de produto isolada). Nenhuma das 8 perguntas originais do `PARTICIPATION_MODEL.md` foi respondida — essa investigação só eliminou a hipótese "existe uma opção grátis que resolve isso".
 
 **V0.6 continua BLOQUEADO.** O usuário pediu pra pausar a sessão logo depois dessa investigação ("pare por enquanto") — sem decisão tomada sobre pagar um integrador ou seguir pro V0.7 ainda.
+
+## DEC-012 — V0.6: segunda rodada de investigação (mais profunda) confirma o mesmo bloqueio (2026-08-16)
+
+Pedido do usuário: "recomece v0.6" — esclarecido via pergunta: refazer a investigação do zero, com mais profundidade, antes de aceitar a conclusão do DEC-011.
+
+**Segunda rodada** (WebFetch direto nas páginas oficiais, não busca genérica): confirmado o preço exato da Pluggy pro plano "Dados" (R$ 2.500/mês, `pluggy.ai/precos`) e uma frase ainda mais explícita restringindo o "Conector 200" (sucessor do "Meu Pluggy") a uso pessoal, "não recomendado para produtos comerciais reais". Checados mais dois provedores (Celcoin, Klavi) — nenhum divulga preço público, ambos exigem contato comercial direto, sem indício de caminho gratuito. Detalhe completo em `docs/foundation/open-finance/PARTICIPATION_MODEL_INVESTIGATION.md`.
+
+**Conclusão confirmada com duas fontes independentes**: não existe caminho zero-custo sustentável pra Open Finance de leitura de dados no Brasil pra um produto multiusuário, hoje.
+
+**Decisão final do usuário**: pausar V0.6 (sem contratar integrador pago) e seguir o roadmap a partir do V0.7 (Alerts).

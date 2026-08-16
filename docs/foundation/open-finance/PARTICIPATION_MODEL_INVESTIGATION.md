@@ -18,6 +18,15 @@ Os únicos caminhos reais são:
 1. Contratar um plano pago de integrador (Pluggy/Belvo/outro) — decisão de orçamento do usuário.
 2. RhoneyInc virar participante direto do Open Finance — exige autorização do Banco Central, processo regulatório de meses, fora do escopo de uma decisão de produto isolada.
 
+## Segunda rodada (2026-08-16, a pedido do usuário: "recomece v0.6")
+
+Usuário pediu pra refazer a investigação do zero, com mais profundidade, antes de aceitar a conclusão acima. Resultado da segunda rodada:
+
+- **Pluggy, direto na página oficial de preços** (`pluggy.ai/precos`): plano "Dados" (contas/saldo/extrato/transações, o que o FinTra precisaria) confirmado **a partir de R$ 2.500/mês**. Teste grátis de 14 dias sem cartão existe, mas é temporário. O sucessor do "Meu Pluggy" (chamado "Conector 200" na página de preços) é descrito com uma frase ainda mais direta: **"gratuito para acesso pessoal apenas... não recomendado para produtos comerciais reais"**.
+- **Celcoin e Klavi**: nenhuma das duas divulga preço público pra API de leitura de Open Finance — exigem contato comercial direto ("fale com vendas"), padrão típico de B2B que, neste mercado específico, historicamente fica na mesma faixa de milhares de reais/mês (não confirmado numericamente pra essas duas, mas sem indício de caminho gratuito em nenhum lugar do material público).
+
+**Duas fontes independentes** (Pluggy e o relato de mercado geral) confirmam a mesma restrição com linguagem quase idêntica: uso pessoal/gratuito exclui explicitamente produto comercial multiusuário.
+
 ## Status
 
-V0.6 continua **BLOQUEADO** (`PARTICIPATION_MODEL.md`). Nenhuma das 8 perguntas do documento original foi respondida — essa investigação só eliminou a hipótese de um caminho gratuito viável, não substitui a decisão jurídica/operacional que o próprio documento exige.
+V0.6 continua **BLOQUEADO** (`PARTICIPATION_MODEL.md`). Nenhuma das 8 perguntas do documento original foi respondida — essa investigação (duas rodadas) só eliminou a hipótese de um caminho gratuito viável, não substitui a decisão jurídica/operacional que o próprio documento exige. **Decisão do usuário (2026-08-16): pausar V0.6 e seguir o roadmap (V0.7 Alerts)** — sem contratar integrador pago por enquanto.
