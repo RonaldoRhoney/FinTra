@@ -29,3 +29,7 @@ export const financialAnalystRepo = {
 export const savingsCoachRepo = {
   suggest: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("savings-coach", payload),
 };
+
+export const behaviorAgentRepo = {
+  detect: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("behavior-agent", payload),
+};

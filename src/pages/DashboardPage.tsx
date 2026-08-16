@@ -18,7 +18,7 @@ import { AgentCard } from "../features/agents/AgentCard";
 import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
 import type { TranslationKey } from "../features/i18n/translations";
-import { financialAnalystRepo, savingsCoachRepo } from "../lib/agents";
+import { behaviorAgentRepo, financialAnalystRepo, savingsCoachRepo } from "../lib/agents";
 import { currentMonth, formatCurrency, formatPercentage } from "../lib/format";
 
 export function DashboardPage() {
@@ -60,7 +60,7 @@ export function DashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <AgentCard
           titleKey="agent_financial_analyst_title"
           ctaKey="agent_financial_analyst_cta"
@@ -74,6 +74,13 @@ export function DashboardPage() {
           loadingKey="agent_savings_coach_loading"
           unavailableKey="agent_savings_coach_unavailable"
           run={() => savingsCoachRepo.suggest({ locale, categoryTrends, budgetsProgress })}
+        />
+        <AgentCard
+          titleKey="agent_behavior_title"
+          ctaKey="agent_behavior_cta"
+          loadingKey="agent_behavior_loading"
+          unavailableKey="agent_behavior_unavailable"
+          run={() => behaviorAgentRepo.detect({ locale, anomalies, categoryTrends, monthlyHistory })}
         />
       </div>
 

@@ -129,6 +129,11 @@ const pt = {
   agent_savings_coach_cta: "Onde posso economizar?",
   agent_savings_coach_loading: "Buscando oportunidades…",
   agent_savings_coach_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
+
+  agent_behavior_title: "Behavior Agent",
+  agent_behavior_cta: "Analisar meu comportamento",
+  agent_behavior_loading: "Procurando padrões…",
+  agent_behavior_unavailable: "O agente está indisponível agora — tente de novo em instantes.",
 };
 
 const en: typeof pt = {
@@ -254,6 +259,11 @@ const en: typeof pt = {
   agent_savings_coach_cta: "Where can I save?",
   agent_savings_coach_loading: "Looking for opportunities…",
   agent_savings_coach_unavailable: "The agent is unavailable right now — try again shortly.",
+
+  agent_behavior_title: "Behavior Agent",
+  agent_behavior_cta: "Analyze my behavior",
+  agent_behavior_loading: "Looking for patterns…",
+  agent_behavior_unavailable: "The agent is unavailable right now — try again shortly.",
 };
 
 const es: typeof pt = {
@@ -379,6 +389,11 @@ const es: typeof pt = {
   agent_savings_coach_cta: "¿Dónde puedo ahorrar?",
   agent_savings_coach_loading: "Buscando oportunidades…",
   agent_savings_coach_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
+
+  agent_behavior_title: "Behavior Agent",
+  agent_behavior_cta: "Analizar mi comportamiento",
+  agent_behavior_loading: "Buscando patrones…",
+  agent_behavior_unavailable: "El agente no está disponible ahora — intenta de nuevo en unos instantes.",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };

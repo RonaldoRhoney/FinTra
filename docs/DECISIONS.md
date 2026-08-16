@@ -120,3 +120,15 @@ Dashboard agora tem os dois agentes lado a lado (grid 2 colunas), cada um indepe
 **Testado ao vivo em produção**: 401 sem token; com usuário de teste real, resposta coerente com valores de economia calculados a partir do dado simulado (categoria acima do orçamento identificada corretamente, com valor estimado de corte).
 
 Build, 29/29 testes e lint continuam limpos.
+
+## DEC-008 — V0.4: terceiro agente (Behavior Agent) (2026-08-16)
+
+Pedido do usuário: "siga o fluxo natural" — terceira continuação direta do V0.4.
+
+**Behavior Agent** (`docs/foundation/05_AGENTS.md`): detecta padrões, mudanças e gastos fora do comportamento histórico. Contexto = anomalias já detectadas (`detectAnomalies`) + tendência por categoria + histórico mensal — tudo reaproveitado do que o dashboard já calcula, nenhuma chamada nova ao banco. Prompt de sistema inclui uma regra específica desse agente: se não houver anomalia nem variação relevante no contexto, dizer isso claramente em vez de inventar um padrão (mesmo cuidado de "não confundir fato com estimativa" do `05_AGENTS.md`, aplicado ao caso de "nada de anormal aconteceu").
+
+Reaproveitou 100% o `runAgent()` compartilhado (DEC-007) — só o prompt de sistema é novo. Dashboard passa a ter 3 agentes lado a lado (`lg:grid-cols-3`).
+
+**Testado em produção**: endpoint rejeita requisição sem token (401), confirmando o deploy e o roteamento corretos. **Não repeti o teste de ponta a ponta com usuário autenticado real desta vez** — o Supabase atingiu rate limit de envio de e-mail de confirmação depois dos testes anteriores (DEC-006/DEC-007) na mesma sessão. Como o `behavior-agent.ts` reaproveita exatamente a mesma função `runAgent()` já validada duas vezes (auth, chamada à Groq, formato de resposta) e só troca o conteúdo do prompt, o risco residual é baixo — mas fica registrado que essa chamada específica não foi confirmada ao vivo com uma resposta real da IA, diferente das duas anteriores.
+
+Build, 29/29 testes e lint continuam limpos.
