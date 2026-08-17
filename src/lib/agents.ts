@@ -45,3 +45,7 @@ export const planningAgentRepo = {
 export const investmentEducationAgentRepo = {
   explain: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("investment-education-agent", payload),
 };
+
+export const cfoAgentRepo = {
+  brief: (payload: AgentQueryBase & Record<string, unknown>) => callAgent("cfo-agent", payload),
+};

@@ -208,3 +208,19 @@ Pedido do usuário: "seguimos para v0.8". Mesma disciplina do V0.4/V0.6: investi
 **V0.8 continua BLOQUEADO** até o CNPJ ser verificado no Meta Business Manager — quando isso acontecer, retomar por `docs/NOTIFICATION_PROVIDER.md`.
 
 Build, 38/38 testes e lint continuam limpos. Deploy de produção atualizado (arquivo novo, sem uso ainda).
+
+## DEC-015 — V0.9: CFO IA — briefing unificado sintetizando os 6 agentes (2026-08-16)
+
+Pedido do usuário: "siga para v0.9". A Foundation não tem nenhuma linha de contexto sobre "CFO IA" além do nome no roadmap (`06_ROADMAP.md`) — apresentei uma interpretação e pedi confirmação antes de codificar (`CLAUDE.md` §2), já que era pura inferência, não requisito documentado.
+
+**Interpretação aprovada pelo usuário**: em vez dos 6 agentes do V0.4 continuarem como cards isolados que a pessoa aciona um por um, o CFO IA sintetiza a mesma responsabilidade de todos eles numa única chamada, devolvendo um briefing priorizado (até 5 observações, mais importante primeiro) — não uma interface de chat livre (opção descartada, escopo bem maior).
+
+**Implementado**:
+- `api/cfo-agent.ts`: reaproveita `runAgent()` (DEC-007). Prompt de sistema herda **todas** as restrições dos 6 agentes individuais, incluindo as mais rígidas (Investment Education Agent) — nunca recomenda ativo/produto específico, nunca garante retorno, nunca calcula valor "ideal" de investimento, mesmo estando numa síntese mais ampla. Termina sempre deixando claro que é análise automatizada, não consultoria personalizada.
+- Recebe numa única chamada todo o contexto que os 6 agentes recebem separados (saldo, histórico mensal, tendência por categoria, orçamento, anomalias, projeção de metas, capacidade de economia, fluxo de caixa) — uma chamada de IA em vez de até 6, mais barato e mais rápido.
+- `AgentCard` ganhou `subtitleKey` e `highlight` (visual destacado — gradiente sutil da cor da marca, botão preenchido em vez de outline) pra diferenciar o CFO dos agentes individuais sem duplicar componente.
+- Dashboard: CFO IA no topo, acima da grade dos 6 agentes — headline da tela, não mais um card igual aos outros.
+
+**Testado ao vivo em produção**: com usuário de teste real (criado e removido), o CFO sintetizou corretamente 5 pontos priorizados a partir de dado simulado — orçamento estourado, capacidade de economia, meta em risco de atraso e projeção de saldo, terminando com o disclaimer de análise automatizada, exatamente como o prompt exige.
+
+Build, 38/38 testes e lint continuam limpos. Deploy de produção atualizado.

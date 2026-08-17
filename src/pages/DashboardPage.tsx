@@ -20,6 +20,7 @@ import { useAppData } from "../features/data/AppDataProvider";
 import { useI18n } from "../features/i18n/I18nProvider";
 import {
   behaviorAgentRepo,
+  cfoAgentRepo,
   financialAnalystRepo,
   goalAgentRepo,
   investmentEducationAgentRepo,
@@ -68,6 +69,29 @@ export function DashboardPage() {
           value={savingsRate === null ? "—" : formatPercentage(savingsRate)}
         />
       </div>
+
+      <AgentCard
+        highlight
+        titleKey="agent_cfo_title"
+        subtitleKey="agent_cfo_subtitle"
+        ctaKey="agent_cfo_cta"
+        loadingKey="agent_cfo_loading"
+        unavailableKey="agent_cfo_unavailable"
+        run={() =>
+          cfoAgentRepo.brief({
+            locale,
+            balance,
+            monthlyHistory,
+            categoryTrends,
+            savingsRate,
+            budgetsProgress,
+            anomalies,
+            goalProjections,
+            savingsCapacity,
+            cashFlow,
+          })
+        }
+      />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <AgentCard

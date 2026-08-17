@@ -173,6 +173,12 @@ const pt = {
   alerts_empty: "Nenhum alerta por enquanto.",
   alerts_mark_read: "Marcar como lido",
   alerts_dismiss: "Descartar",
+
+  agent_cfo_title: "CFO IA",
+  agent_cfo_subtitle: "Uma visão só, priorizando o que mais importa agora — em vez de 6 respostas separadas.",
+  agent_cfo_cta: "Gerar meu briefing",
+  agent_cfo_loading: "Sintetizando sua situação financeira…",
+  agent_cfo_unavailable: "O CFO IA está indisponível agora — os agentes individuais abaixo continuam funcionando. Tente de novo em instantes.",
 };
 
 const en: typeof pt = {
@@ -342,6 +348,12 @@ const en: typeof pt = {
   alerts_empty: "No alerts yet.",
   alerts_mark_read: "Mark as read",
   alerts_dismiss: "Dismiss",
+
+  agent_cfo_title: "AI CFO",
+  agent_cfo_subtitle: "One view, prioritizing what matters most right now — instead of 6 separate answers.",
+  agent_cfo_cta: "Generate my briefing",
+  agent_cfo_loading: "Synthesizing your financial situation…",
+  agent_cfo_unavailable: "The AI CFO is unavailable right now — the individual agents below keep working. Try again shortly.",
 };
 
 const es: typeof pt = {
@@ -511,6 +523,12 @@ const es: typeof pt = {
   alerts_empty: "Todavía no hay alertas.",
   alerts_mark_read: "Marcar como leído",
   alerts_dismiss: "Descartar",
+
+  agent_cfo_title: "CFO IA",
+  agent_cfo_subtitle: "Una sola vista, priorizando lo que más importa ahora — en vez de 6 respuestas separadas.",
+  agent_cfo_cta: "Generar mi briefing",
+  agent_cfo_loading: "Sintetizando tu situación financiera…",
+  agent_cfo_unavailable: "El CFO IA no está disponible ahora — los agentes individuales abajo siguen funcionando. Intenta de nuevo en unos instantes.",
 };
 
 export const translations: Record<Locale, typeof pt> = { pt, en, es };
