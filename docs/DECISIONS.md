@@ -224,3 +224,16 @@ Pedido do usuário: "siga para v0.9". A Foundation não tem nenhuma linha de con
 **Testado ao vivo em produção**: com usuário de teste real (criado e removido), o CFO sintetizou corretamente 5 pontos priorizados a partir de dado simulado — orçamento estourado, capacidade de economia, meta em risco de atraso e projeção de saldo, terminando com o disclaimer de análise automatizada, exatamente como o prompt exige.
 
 Build, 38/38 testes e lint continuam limpos. Deploy de produção atualizado.
+
+## DEC-016 — V1.0: revisão geral, auditoria de segurança e fechamento (2026-08-16)
+
+Pedido do usuário: "pode segui para v1.0". Como acordado ao final do V0.9, V1.0 é mais uma marca de "produto completo" do que uma etapa técnica nova (todo o roadmap V0.1–V0.9 já implementado, exceto os 2 bloqueios de negócio). Antes de fechar, fiz uma revisão geral:
+
+- Build, 38/38 testes e lint confirmados limpos mais uma vez.
+- **Auditoria de RLS em produção**: as 8 tabelas do schema (`profiles`, `accounts`, `transaction_categories`, `transactions`, `budgets`, `goals`, `goal_contributions`, `alerts`) confirmadas com RLS habilitada e sem grant pra `anon`.
+- **Achado real de segurança, corrigido na hora**: a função `admin_platform_metrics()` (DEC-002) tinha `EXECUTE` concedido a `PUBLIC`/`anon`, apesar da migration original (`0002_admin_role.sql`) já ter um `revoke all ... from public` — o revoke não tinha efeito completo (causa exata não investigada a fundo, mas confirmado via `information_schema.role_routine_grants` que `anon` e `PUBLIC` ainda apareciam com `EXECUTE`). **Não era explorável de fato**: a função valida `role='admin'` internamente via `auth.uid()`, e uma chamada sem sessão sempre cai no `raise exception`. Corrigido por defesa em profundidade — `revoke execute ... from public/anon` explícito, `grant` mantido só pra `authenticated`. Re-testado ao vivo: admin continua funcionando (`total_users` retornado corretamente), o revoke não quebrou nada.
+- `PROJECT_CONTEXT.md` reescrito — estava parado no V0.1 (não tinha sido atualizado desde a criação do projeto), agora reflete o estado real de V1.0.
+
+**Não fechado, por decisão consciente**: Open Finance (V0.6) e WhatsApp (V0.8) continuam bloqueados por decisão de negócio (custo/CNPJ), não técnica — não fazem parte do "V1.0 completo" porque a própria Foundation nunca definiu esses dois como obrigatórios pra essa marca, e o usuário já confirmou explicitamente pausar os dois.
+
+Build, 38/38 testes e lint continuam limpos. Nenhum código de produto quebrado pela correção de segurança.

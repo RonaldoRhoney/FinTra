@@ -1,32 +1,31 @@
 # PROJECT_CONTEXT — FinTra
 
-## Estado atual (2026-08-16)
+## Estado atual (2026-08-16) — V1.0
 
-Projeto recém-criado. Recebida a Foundation completa do usuário (`docs/foundation/`, 26 arquivos: visão, PRD, arquitetura, modelo de dado, agentes, roadmap, regras, dashboard spec, privacidade/LGPD, Open Finance, segurança) mais um mockup visual (`docs/foundation/reference_mockup.png`, marca "Rhoney") e uma demo estática de dashboard (`docs/foundation/reference_dashboard_demo/index.html`, dado fictício).
+Todas as versões do roadmap original (`docs/foundation/06_ROADMAP.md`) foram implementadas, exceto duas bloqueadas por decisão de negócio explícita (não técnica). Produto em produção, real, com dado de teste validado ponta a ponta em cada etapa — nunca mockado.
 
-Scaffold técnico criado: React + Vite + TypeScript + Tailwind CSS (v4, via `@tailwindcss/vite`), repositório `github.com/RonaldoRhoney/FinTra`. Nenhuma tela funcional além de um placeholder "Em construção". Nenhum Supabase, autenticação, schema de dado ou deploy configurados ainda.
+**No ar**: [fintra.rhoneyinc.com](https://fintra.rhoneyinc.com). Repositório: `github.com/RonaldoRhoney/FinTra`. Supabase: projeto `effbaiizowiwcglsrxcn`. Deploy: Vercel (`vercel --prod` em `Fintra/`, mesmo padrão dos demais produtos RhoneyInc).
 
-## Decisões já tomadas nesta fase
+## Decisões estruturais (ver `docs/DECISIONS.md` pra detalhe completo, DEC-001 a DEC-015)
 
-- **FinTra é produto irmão distinto do FinWise** (`Controle-Financeiro-Pessoal/`), não uma v2 dele e não o substitui — repositório e (quando existir) Supabase próprios. Confirmado pelo usuário em 2026-08-16.
-- **Posicionamento de marketing entre FinTra e FinWise ainda não definido** — não bloqueia o técnico, mas não presuma um público-alvo específico até o usuário decidir.
-- **Stack**: React/Vite/TS/Tailwind + Supabase + Vercel, alinhado aos produtos RhoneyInc mais recentes (KnowRa, VoaRadar, VagaLume) — a Foundation original não especificava framework, então essa é uma escolha de consistência de família, não um requisito do usuário. Pode ser revisitada se ele preferir outra coisa.
-- **Open Finance é BLOCKER**, não item de V0.1–V0.5 — ver `CLAUDE.md` §3.4 e `docs/foundation/open-finance/PARTICIPATION_MODEL.md`.
-- Documentos da Foundation preservados integralmente em `docs/foundation/` como fonte de verdade original; `CLAUDE.md`/`PRD.md`/`ROADMAP.md` na raiz são a tradução pro formato padrão da família — nunca a única fonte.
+- **FinTra é produto irmão distinto do FinWise** (`Controle-Financeiro-Pessoal/`) — repositório e Supabase próprios. Posicionamento de marketing entre os dois ainda não definido.
+- **Stack**: React + Vite + TS + Tailwind v4 (fonte Inter self-hosted) + Supabase (Postgres + Auth + RLS) + Vercel, alinhado aos produtos RhoneyInc mais recentes.
+- **Admin padrão**: `rhoneyinc@gmail.com` promovida a admin automaticamente no cadastro (skill `admin-padrao`), com painel de métricas agregadas (`admin_platform_metrics()`, nunca expõe transação individual de usuário).
+- **Tema claro/escuro** e **i18n PT (padrão)/EN/ES** em toda a interface, incluindo nomes dos 6 agentes de IA (corrigido depois de um esquecimento inicial — só o Financial Analyst tinha sido traduzido).
+- **Financial Engine 100% determinístico** (`src/engine/financialEngine.ts`) — nunca depende de IA pra cálculo essencial (`docs/foundation/01_ZERO_COST_FIRST.md`). 38 testes cobrindo especialmente os casos de "histórico insuficiente" (nunca projeta/alerta com pouco dado).
+- **6 agentes de IA + CFO IA** via Groq (`llama-3.3-70b-versatile`), escolhido sobre Gemini free tier após investigação real (Groq não retém/treina com dado do usuário, Gemini free tier declara que pode). Chave só no backend (Vercel Edge Functions), nunca no frontend. Contexto enviado sempre agregado, nunca transação crua nem PII.
+- **Alertas persistidos** (V0.7), deduplicados por 7 dias a partir dos mesmos insights do Financial Engine.
+- **Dois itens bloqueados por decisão de negócio, não técnica**:
+  - **Open Finance (V0.6)**: sem caminho zero-custo real pro Brasil pra produto multiusuário (Pluggy R$2.500/mês, Belvo R$6.000/mês, oferta grátis só pra uso pessoal/1 CPF) — confirmado em duas rodadas de investigação real.
+  - **WhatsApp/Omnichannel (V0.8)**: caminho quase-zero-custo existe (Meta Cloud API, 1.000 conversas grátis/mês), mas exige CNPJ verificado no Meta Business Manager, que o RhoneyInc/FinTra não tem ainda. Arquitetura preparada (`docs/NOTIFICATION_PROVIDER.md`), zero implementação real.
 
-## V0.1 implementado (2026-08-16), aguardando Supabase real pra validar ponta a ponta
+## Auditoria de segurança (2026-08-16, antes de fechar V1.0)
 
-Aprovado pelo usuário e implementado no mesmo dia:
+RLS habilitada e sem grant pra `anon` confirmado nas 8 tabelas (`profiles`, `accounts`, `transaction_categories`, `transactions`, `budgets`, `goals`, `goal_contributions`, `alerts`). **Achado e corrigido**: a função `admin_platform_metrics()` tinha `EXECUTE` liberado pra `PUBLIC`/`anon` apesar da migration original tentar revogar isso — não era explorável de fato (a função valida `role='admin'` internamente, `anon` sem sessão sempre cai no `raise exception`), mas corrigido por defesa em profundidade: revogado explicitamente de `anon`/`PUBLIC`, mantido só pra `authenticated`. Re-testado ao vivo: admin continua funcionando, usuário comum continua bloqueado.
 
-- **Schema** (`supabase/migrations/0001_v01_schema.sql`): `profiles`, `accounts`, `transaction_categories`, `transactions`, `budgets`, `goals`, `goal_contributions`. RLS em todas, políticas `user_id = auth.uid()`, sem grant pra `anon`. Trigger `handle_new_fintra_user` cria `profile` + 8 categorias padrão (Salário, Outras entradas, Moradia, Alimentação, Transporte, Lazer, Saúde, Outros) no cadastro — cobre login social e email/senha igual (mesmo padrão do VoaRadar DEC-116).
-- **Financial Engine** (`src/engine/financialEngine.ts`): puro e determinístico, sem IA — `calculateBalance`, `summarizePeriod`, `calculateSavingsRate`, `aggregateByCategory`, `calculateBudgetProgress`, `calculateGoalProgress`. 13 testes (`financialEngine.test.ts`), cobrindo renda zero, categoria vazia, meta ultrapassada, orçamento estourado.
-- **Auth**: email/senha via Supabase Auth (`AuthProvider.tsx`), sem login social ainda (V0.1 não pedia).
-- **CRUD completo**: Contas, Transações, Categorias, Orçamentos, Metas (com contribuição), todas as telas em `src/pages/`, dados via `src/lib/repositories.ts`.
-- **Dashboard**: patrimônio, entradas/saídas/saldo do mês, taxa de economia, gastos por categoria — tudo calculado a partir de dado real do usuário via Financial Engine, nunca mockado.
-- Build, `npm test` (13/13) e `oxlint` limpos.
+## O que fica pra depois do V1.0
 
-**Bloqueado até o usuário criar o projeto Supabase e passar `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`**: aplicar a migration num banco real, testar RLS com 2 usuários de verdade, validar o fluxo de cadastro→categorias padrão→dashboard ponta a ponta, e então fazer o primeiro deploy (Vercel, mesmo padrão dos demais produtos).
-
-## Próximo passo
-
-Assim que o Supabase existir: aplicar `supabase/migrations/0001_v01_schema.sql`, configurar `.env` local a partir de `.env.example`, testar o fluxo real (cadastro, RLS entre 2 usuários, CRUD, dashboard) e então deploy.
+- Open Finance e WhatsApp, quando as respectivas decisões de negócio (integrador pago ou participante direto; CNPJ verificado) forem resolvidas.
+- Recorrência de transação (assinatura mensal automática) — mencionada no roadmap como fora de escopo até pedido explícito.
+- Páginas de privacidade/termos/contato dedicadas (mesma lacuna já registrada nos produtos-irmãos como VoaRadar).
+- Legal Basis Matrix validada por jurídico/DPO (`docs/foundation/privacy/LEGAL_BASIS_MATRIX.md`) — necessária antes de qualquer tratamento de dado real de terceiro em escala.

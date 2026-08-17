@@ -16,7 +16,7 @@
 - **V0.7** — Alerts. **STATUS: CONCLUÍDA** (2026-08-16, DEC-013). Alertas persistidos (tabela `alerts`, RLS validada), deduplicados por 7 dias a partir dos insights do V0.2, página "Alertas" (marcar como lido/descartar) + contador de não lidos na sidebar.
 - **V0.8** — Omnichannel/WhatsApp. **BLOQUEADO** (2026-08-16, DEC-014). Meta Cloud API tem caminho quase-zero-custo real (1.000 conversas grátis/mês), mas exige CNPJ verificado no Meta Business Manager — RhoneyInc/FinTra ainda não tem. Só a arquitetura foi preparada (`docs/NOTIFICATION_PROVIDER.md`, interface `NotificationProvider`), nenhuma implementação real. Retomar quando o CNPJ existir.
 - **V0.9** — CFO IA. **STATUS: CONCLUÍDA** (2026-08-16, DEC-015). Briefing unificado (`api/cfo-agent.ts`) sintetizando os 6 agentes do V0.4 numa única chamada priorizada, herdando todas as restrições deles (inclusive as do Investment Education Agent). No topo do dashboard, em destaque acima da grade dos agentes individuais.
-- **V1.0** — Personal Financial Intelligence.
+- **V1.0** — Personal Financial Intelligence. **STATUS: FECHADA** (2026-08-16, DEC-016). Todo o roadmap V0.1–V0.9 implementado e em produção, exceto os 2 bloqueios de negócio (Open Finance, WhatsApp — ver acima), que nunca foram requisito obrigatório dessa marca. Revisão geral feita antes de fechar: build/testes/lint limpos, RLS auditada nas 8 tabelas, 1 achado de segurança corrigido (grant indevido de `EXECUTE` em `admin_platform_metrics`, não explorável mas corrigido por defesa em profundidade). Ver `PROJECT_CONTEXT.md` pro resumo consolidado do produto.
 
 ## Pendências que bloqueiam etapas futuras (não bloqueiam o V0.1)
 
