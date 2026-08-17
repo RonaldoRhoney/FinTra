@@ -194,3 +194,17 @@ Pedido do usuário: "siga para v0.7". Plano apresentado e aprovado antes de codi
 - `AlertsPage`: lista alertas, marcar como lido, descartar. Contador de não lidos na sidebar, ao lado do item "Alertas".
 
 Build, 38/38 testes (4 novos) e lint continuam limpos. Deploy de produção atualizado.
+
+## DEC-014 — V0.8: WhatsApp investigado, bloqueado por falta de CNPJ; só arquitetura preparada (2026-08-16)
+
+Pedido do usuário: "seguimos para v0.8". Mesma disciplina do V0.4/V0.6: investiguei o custo/viabilidade real antes de propor implementação.
+
+**Investigação real (WebSearch)**: diferente do Open Finance, o WhatsApp (Meta Cloud API) **tem** um caminho quase-zero-custo — acesso técnico à API é grátis, 1.000 conversas de serviço grátis/mês, mensagens iniciadas pelo usuário dentro de 24h são ilimitadas. Conversas de alerta (categoria "Utilidade") custam R$0,06–0,09 só acima da cota grátis. Mudança já anunciada pra 1º/out/2026: mensagem de serviço passa a custar R$0,035 mesmo dentro da janela de 24h hoje grátis — vale monitorar antes de dimensionar custo esperado.
+
+**Mas exige pré-requisito de negócio, não técnico**: CNPJ verificado no Meta Business Manager, número de telefone dedicado, processo de verificação de 3–7 dias úteis. **Usuário confirmou: RhoneyInc/FinTra não tem CNPJ verificado ainda.** Sem isso, nenhuma implementação real é possível nesta sessão.
+
+**Decisão do usuário**: preparar só a arquitetura, sem conectar nada real. Criado `docs/NOTIFICATION_PROVIDER.md` (mesmo espírito de `docs/foundation/open-finance/PROVIDER_ABSTRACTION.md`: contrato antes de implementação, nenhum endpoint inventado) e a interface `NotificationProvider` (`src/features/notifications/notificationProvider.ts`) — reaproveita 100% o que o V0.7 já persiste (`alerts.kind`/`alerts.payload`), sem implementação concreta, sem chave real. `AlertKind` extraído como tipo nomeado em `types/finance.ts` pra dar suporte a essa interface.
+
+**V0.8 continua BLOQUEADO** até o CNPJ ser verificado no Meta Business Manager — quando isso acontecer, retomar por `docs/NOTIFICATION_PROVIDER.md`.
+
+Build, 38/38 testes e lint continuam limpos. Deploy de produção atualizado (arquivo novo, sem uso ainda).

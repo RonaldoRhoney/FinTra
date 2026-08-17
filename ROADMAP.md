@@ -14,7 +14,7 @@
 - **V0.5** — Reports. **STATUS: CONCLUÍDA** (2026-08-16, DEC-010). Página "Relatórios": período (7d/30d/mês atual/mês passado) com comparação vs. período anterior, evolução mensal em gráfico de barras CSS, gastos por categoria do período. Calculado sob demanda, sem persistir relatório salvo/exportável (fora de escopo por enquanto).
 - **V0.6** — Open Finance. **PAUSADA por decisão do usuário** (2026-08-16, DEC-011/DEC-012). Duas rodadas de investigação real confirmaram que não há caminho zero-custo aplicável ao FinTra: Pluggy R$2.500/mês (plano "Dados", confirmado na página oficial de preços), Belvo ~R$6.000/mês, "Conector 200"/"Meu Pluggy" gratuito explicitamente restrito a uso pessoal (não produto comercial multiusuário). Nenhuma das 8 perguntas de `docs/foundation/open-finance/PARTICIPATION_MODEL.md` foi respondida. Usuário decidiu não contratar integrador pago por enquanto — segue pro V0.7.
 - **V0.7** — Alerts. **STATUS: CONCLUÍDA** (2026-08-16, DEC-013). Alertas persistidos (tabela `alerts`, RLS validada), deduplicados por 7 dias a partir dos insights do V0.2, página "Alertas" (marcar como lido/descartar) + contador de não lidos na sidebar.
-- **V0.8** — Omnichannel/WhatsApp.
+- **V0.8** — Omnichannel/WhatsApp. **BLOQUEADO** (2026-08-16, DEC-014). Meta Cloud API tem caminho quase-zero-custo real (1.000 conversas grátis/mês), mas exige CNPJ verificado no Meta Business Manager — RhoneyInc/FinTra ainda não tem. Só a arquitetura foi preparada (`docs/NOTIFICATION_PROVIDER.md`, interface `NotificationProvider`), nenhuma implementação real. Retomar quando o CNPJ existir.
 - **V0.9** — CFO IA.
 - **V1.0** — Personal Financial Intelligence.
 

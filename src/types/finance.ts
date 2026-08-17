@@ -57,10 +57,11 @@ export interface GoalContribution {
 }
 
 export type AlertStatus = "unread" | "read" | "dismissed";
+export type AlertKind = "category_spike" | "anomaly" | "negative_cash_flow" | "goal_off_track";
 
 export interface Alert {
   id: string;
-  kind: "category_spike" | "anomaly" | "negative_cash_flow" | "goal_off_track";
+  kind: AlertKind;
   dedupeKey: string;
   payload: Record<string, unknown>;
   status: AlertStatus;
